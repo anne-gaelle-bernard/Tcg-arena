@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hoops TGC - Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main class="page">
+      <section class="left-side" aria-label="Basketball promo visual">
+        <!-- Promo content removed to avoid text overlap -->
+      </section>
+
+      <section class="right-side">
+        <h2>Welcome Back</h2>
+        <p class="subtext">Ready to hit the court? Sign in to your account.</p>
+
+        <div class="tabs" role="tablist" aria-label="Account tabs">
+          <a class="tab is-active" href="index.html" role="tab" aria-selected="true">Sign In</a>
+          <a class="tab" href="register.html" role="tab" aria-selected="false">Create Account</a>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <label for="email">Email Address</label>
+          <div class="field">
+            <span class="field-icon">@</span>
+            <input id="email" name="email" type="email" placeholder="coach@hoopstgc.com" />
+          </div>
+
+          <div class="label-line">
+            <label for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+          </div>
+          <div class="field">
+            <span class="field-icon">*</span>
+            <input id="password" name="password" type="password" placeholder="••••••••" minlength="6" />
+            <button id="togglePassword" class="ghost-icon" type="button" aria-label="Show password">Show</button>
+          </div>
+
+          <button class="primary-btn" type="submit">Enter the Arena →</button>
+          <p id="formMessage" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <p class="divider">OR CONTINUE WITH</p>
+
+        <div class="social-row">
+          <button class="social-btn" type="button">Google</button>
+          <button class="social-btn" type="button">Apple</button>
+        </div>
+
+        <p class="terms">
+          By continuing, you agree to the Terms of Service and Privacy Policy.
+        </p>
+      </section>
+    </main>
+
+  <script type="module" src="login.js"></script>
+</body>
+</html>
