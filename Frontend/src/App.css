@@ -1,0 +1,209 @@
+/* Reset & base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  color: #f2e6d8;
+  background: #0a0604;
+}
+
+/* ── Login page layout ────────────────────────────── */
+.page {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.left-side {
+  padding: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45)),
+    url("../assets/b15.png");
+  background-size: contain;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.right-side {
+  padding: 32px 28px;
+  background: #2a1a11;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-side h2 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  color: #f2e6d8;
+}
+
+.subtext {
+  margin: 0 0 16px 0;
+  color: #c2a88f;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #6a472a;
+  margin-bottom: 18px;
+}
+
+.tab {
+  display: block;
+  text-align: center;
+  background: transparent;
+  color: #d0b091;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 8px 0;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.tab.is-active {
+  color: #ffd3a1;
+  border-bottom-color: #ff9d2e;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: #d7bb9d;
+  margin: 12px 0 5px 0;
+  font-weight: 500;
+}
+
+.label-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-link {
+  color: #ffc169;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #5a3b25;
+  border-radius: 6px;
+  background: #2a1c14;
+  padding: 9px 11px;
+  font-size: 13px;
+}
+
+.field-icon {
+  color: #c79f78;
+  width: 18px;
+  text-align: center;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fce9d3;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #8a6a4f;
+}
+
+.ghost-icon {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: #d4b698;
+}
+
+.primary-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ff962f, #ffb34b);
+  color: #2f180a;
+  font-weight: 800;
+  padding: 11px 10px;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.form-message {
+  min-height: 20px;
+  margin: 8px 2px 0;
+  color: #ffdcae;
+  font-size: 13px;
+}
+
+.divider {
+  margin: 12px 0 10px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #9f7a59;
+}
+
+.social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.social-btn {
+  border: 1px solid #5d3c26;
+  background: #1f130d;
+  color: #efd6bb;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.terms {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #9e7b5c;
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .left-side {
+    min-height: 220px;
+  }
+}
+
