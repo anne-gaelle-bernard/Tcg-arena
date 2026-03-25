@@ -1,0 +1,360 @@
+.register-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Left Side - Hero Section */
+.hero-section {
+  background-image: linear-gradient(135deg, rgba(20, 15, 10, 0.1) 0%, rgba(0, 0, 0, 0.16) 100%), url('../../assets/b15.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: white;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  pointer-events: none;
+}
+
+.live-badge {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1a1a1a;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  z-index: 10;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+  margin-top: 10px;
+}
+
+.hero-title {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  letter-spacing: -1px;
+}
+
+.hero-title .highlight {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-description {
+  font-size: 13px;
+  color: #b0b0b0;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  max-width: 350px;
+}
+
+.stats {
+  display: flex;
+  gap: 60px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #f59e0b;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: 0.8px;
+  font-weight: 500;
+}
+
+/* Right Side - Form Section */
+.form-section {
+  padding: 30px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, #2a1e0f 0%, #1a1410 100%);
+  overflow-y: auto;
+}
+
+.form-header {
+  margin-bottom: 16px;
+}
+
+.form-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.form-header p {
+  color: #a0a0a0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.tab {
+  flex: 1;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  color: #808080;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  position: relative;
+  bottom: -1px;
+}
+
+.tab.active {
+  color: #f59e0b;
+  border-bottom-color: #f59e0b;
+}
+
+.tab:hover:not(.active) {
+  color: #a0a0a0;
+}
+
+/* Form Styles */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 18px;
+  color: #f59e0b;
+  z-index: 2;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  background: rgba(42, 42, 42, 0.6);
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.form-group input::placeholder {
+  color: #696969;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  background: #2a2a2a;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #808080;
+  transition: color 0.2s;
+  padding: 4px 8px;
+  z-index: 3;
+}
+
+.toggle-password:hover {
+  color: #f59e0b;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(245, 158, 11, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Sign In Form */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.signin-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.signin-form .form-group label {
+  margin-bottom: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Continue Section */
+.continue-section {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #3a3a3a;
+}
+
+.continue-section p {
+  color: #808080;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 12px;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  background: #303030;
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .register-container {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    min-height: 300px;
+    padding: 40px;
+  }
+
+  .hero-title {
+    font-size: 40px;
+  }
+
+  .form-section {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .form-section {
+    padding: 30px 20px;
+  }
+
+  .form-header h2 {
+    font-size: 28px;
+  }
+
+  .stats {
+    gap: 40px;
+  }
+}
