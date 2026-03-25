@@ -157,7 +157,7 @@ const HoopsTCG: React.FC = () => {
       gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
       gap: '24px',
     } as React.CSSProperties,
-    card: (isHovered: boolean, _teamColor: string, rarity: string) => ({
+    card: (isHovered: boolean, rarity: string) => ({
       backgroundColor: '#12122a',
       borderRadius: '16px',
       overflow: 'hidden',
@@ -330,7 +330,7 @@ const HoopsTCG: React.FC = () => {
             {filtered.map((card) => (
               <div
                 key={card.id}
-                style={styles.card(hoveredCard === card.id, card.color, card.rarity)}
+                style={styles.card(hoveredCard === card.id, card.rarity)}
                 onMouseEnter={() => setHoveredCard(card.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
