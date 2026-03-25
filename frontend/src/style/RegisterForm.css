@@ -10,7 +10,7 @@
 .hero-section {
   background-image: linear-gradient(135deg, rgba(20, 15, 10, 0.1) 0%, rgba(0, 0, 0, 0.16) 100%), url('../../assets/b15.png');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 780px 780px;
   background-position: center;
   position: relative;
   padding: 60px 40px;
@@ -328,7 +328,7 @@
   }
 
   .hero-section {
-    min-height: 300px;
+    min-height: 450px;
     padding: 40px;
   }
 
