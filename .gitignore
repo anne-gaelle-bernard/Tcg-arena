@@ -40,11 +40,8 @@ coverage/
 # SASS
 .sass-cache/
 
-# Compiled
-*.js
-*.jsx
-*.ts
-*.tsx
+# Compiled JavaScript output (not source)
+*.js.map
 
 # Ignore build output
 /build/

@@ -16,6 +16,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["Fontend/src", "Fontend/Login/RegisterForm.tsx"],
+  "include": ["Frontend/src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
