@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+  --tcg-bg-1: #140d08;
+  --tcg-bg-2: #25140a;
+  --tcg-bg-3: #2f1a0d;
+  --tcg-accent: #ff9d2f;
+  --tcg-accent-dark: #d9791f;
+  --tcg-text: #f4efe9;
+  --tcg-muted: #c8b29a;
+  --tcg-line: rgba(255, 157, 47, 0.25);
+}
+
+.dashboard-shell {
+  position: relative;
+  min-height: 100vh;
+  color: var(--tcg-text);
+  font-family: 'Rajdhani', sans-serif;
+  background:
+    radial-gradient(circle at 18% 42%, rgba(255, 151, 58, 0.25), transparent 45%),
+    radial-gradient(circle at 75% 65%, rgba(255, 151, 58, 0.2), transparent 38%),
+    linear-gradient(90deg, var(--tcg-bg-1) 0%, var(--tcg-bg-3) 50%, var(--tcg-bg-1) 100%);
+  overflow: hidden;
+}
+
+.dashboard-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.dashboard-bg-orb-left {
+  width: 300px;
+  height: 300px;
+  left: 18%;
+  top: 48%;
+  background: rgba(255, 119, 0, 0.2);
+}
+
+.dashboard-bg-orb-right {
+  width: 260px;
+  height: 260px;
+  right: 18%;
+  top: 25%;
+  background: rgba(255, 162, 66, 0.12);
+}
+
+.dashboard-header {
+  position: relative;
+  z-index: 2;
+  height: 84px;
+  padding: 14px 56px;
+  border-bottom: 1px solid var(--tcg-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--tcg-accent);
+  color: #1f1308;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.brand-name {
+  margin: 0;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 34px;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-chip {
+  border: 1px solid var(--tcg-line);
+  border-radius: 12px;
+  padding: 8px 14px;
+  background: rgba(35, 22, 10, 0.68);
+  min-width: 235px;
+}
+
+.profile-chip p {
+  margin: 0;
+}
+
+.profile-name {
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--tcg-accent);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.profile-meta {
+  font-size: 14px;
+  color: var(--tcg-text);
+  font-weight: 600;
+}
+
+.profile-level {
+  font-size: 25px;
+  margin-top: 4px;
+  color: var(--tcg-accent);
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+}
+
+.header-icon {
+  border: 1px solid var(--tcg-line);
+  border-radius: 10px;
+  background: rgba(35, 22, 10, 0.68);
+  color: var(--tcg-text);
+  padding: 10px 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.header-icon:hover {
+  border-color: var(--tcg-accent);
+  color: var(--tcg-accent);
+  transform: translateY(-2px);
+}
+
+.dashboard-main {
+  position: relative;
+  z-index: 2;
+  min-height: calc(100vh - 150px);
+  padding: 64px 56px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.menu-panel {
+  width: 320px;
+}
+
+.menu-title {
+  margin: 0 0 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--tcg-accent);
+  font-size: 26px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+}
+
+.menu-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.menu-btn {
+  border: 1px solid rgba(255, 157, 47, 0.45);
+  border-radius: 12px;
+  background: rgba(40, 22, 10, 0.52);
+  color: var(--tcg-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 30px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  text-align: left;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-btn:hover {
+  transform: translateX(5px);
+  border-color: var(--tcg-accent);
+}
+
+.menu-btn-active {
+  background: linear-gradient(135deg, var(--tcg-accent), var(--tcg-accent-dark));
+  color: #2a1709;
+  box-shadow: 0 10px 25px rgba(255, 157, 47, 0.35);
+}
+
+.featured-panel {
+  flex: 1;
+  max-width: 420px;
+}
+
+.featured-panel h1 {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 50px;
+  line-height: 0.92;
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.featured-subtitle {
+  margin: 8px 0 24px;
+  color: var(--tcg-accent);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cards-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tcg-card {
+  width: 220px;
+  border: 2px solid rgba(255, 157, 47, 0.8);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #2f1a0d 0%, #221107 100%);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  animation: cardIn 0.6s ease;
+}
+
+.tcg-card:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.tcg-card-top {
+  height: 88px;
+  padding: 10px;
+  background:
+    linear-gradient(120deg, rgba(255, 179, 94, 0.4), rgba(255, 123, 0, 0.2)),
+    linear-gradient(45deg, #4a2d14 30%, #6a3d19 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tcg-badge,
+.tcg-score {
+  background: var(--tcg-accent);
+  color: #25150a;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 2px 7px;
+}
+
+.tcg-card-body {
+  padding: 12px;
+}
+
+.tcg-card-body h2 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.tcg-card-body p {
+  margin: 10px 0 0;
+  color: var(--tcg-accent);
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.dashboard-footer {
+  position: relative;
+  z-index: 2;
+  height: 66px;
+  border-top: 1px solid var(--tcg-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 0 56px;
+  color: #d1bca6;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1100px) {
+  .dashboard-header,
+  .dashboard-main,
+  .dashboard-footer {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .dashboard-main {
+    padding-top: 34px;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .menu-panel,
+  .featured-panel,
+  .tcg-card {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-header {
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .brand-name {
+    font-size: 28px;
+  }
+
+  .header-right {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .profile-chip {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .menu-title {
+    font-size: 22px;
+  }
+
+  .menu-btn {
+    font-size: 22px;
+  }
+
+  .featured-panel h1 {
+    font-size: 36px;
+  }
+
+  .featured-subtitle {
+    font-size: 16px;
+  }
+
+  .dashboard-footer {
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+}

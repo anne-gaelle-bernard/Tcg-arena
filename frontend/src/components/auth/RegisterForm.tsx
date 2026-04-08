@@ -1,23 +1,127 @@
 import { useState } from 'react'
 import '../../style/RegisterForm.css'
+import { loginUser, registerUser } from '../../services/authApi'
+import type { AuthUser } from '../../services/authApi'
 
-export default function RegisterForm() {
+type RegisterFormProps = {
+  onSignInSuccess: (user: AuthUser) => void
+}
+
+export default function RegisterForm({ onSignInSuccess }: RegisterFormProps) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [signinEmail, setSigninEmail] = useState('')
+  const [signinPassword, setSigninPassword] = useState('')
+  const [signinError, setSigninError] = useState('')
+  const [registerError, setRegisterError] = useState('')
+  const [registerSuccess, setRegisterSuccess] = useState('')
+  const [isRegisterLoading, setIsRegisterLoading] = useState(false)
+  const [isSignInLoading, setIsSignInLoading] = useState(false)
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [activeTab, setActiveTab] = useState('register')
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', {
-      fullName,
-      email,
-      password,
-      confirmPassword,
-    })
+  const handleSubmit = async () => {
+    setRegisterError('')
+    setRegisterSuccess('')
+
+    if (password !== confirmPassword) {
+      setRegisterError('Passwords do not match.')
+      return
+    }
+
+    if (password.length < 6) {
+      setRegisterError('Password must be at least 6 characters.')
+      return
+    }
+
+    try {
+      setIsRegisterLoading(true)
+      const response = await registerUser(fullName, email, password)
+      setRegisterSuccess(response.message)
+      setActiveTab('signin')
+      setSigninEmail(email)
+      setSigninPassword('')
+      setPassword('')
+      setConfirmPassword('')
+    } catch (error) {
+      let errorMessage = 'Registration failed.'
+
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      setRegisterError(errorMessage)
+    } finally {
+      setIsRegisterLoading(false)
+    }
+  }
+
+  const handleSignIn = async () => {
+    if (!signinEmail.trim() || !signinPassword.trim()) {
+      setSigninError('Please enter email and password.')
+      return
+    }
+
+    try {
+      setIsSignInLoading(true)
+      setSigninError('')
+      const response = await loginUser(signinEmail, signinPassword)
+      onSignInSuccess(response.user)
+    } catch (error) {
+      let errorMessage = 'Sign in failed.'
+
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+
+      setSigninError(errorMessage)
+    } finally {
+      setIsSignInLoading(false)
+    }
+  }
+
+  let signinTabClassName = 'tab'
+  if (activeTab === 'signin') {
+    signinTabClassName += ' active'
+  }
+
+  let registerTabClassName = 'tab'
+  if (activeTab === 'register') {
+    registerTabClassName += ' active'
+  }
+
+  let passwordInputType = 'password'
+  if (showPassword) {
+    passwordInputType = 'text'
+  }
+
+  let passwordToggleLabel = 'Show'
+  if (showPassword) {
+    passwordToggleLabel = 'Hide'
+  }
+
+  let confirmPasswordInputType = 'password'
+  if (showConfirmPassword) {
+    confirmPasswordInputType = 'text'
+  }
+
+  let confirmPasswordToggleLabel = 'Show'
+  if (showConfirmPassword) {
+    confirmPasswordToggleLabel = 'Hide'
+  }
+
+  let registerSubmitLabel = 'Create My Account →'
+  if (isRegisterLoading) {
+    registerSubmitLabel = 'Creating Account...'
+  }
+
+  let signinSubmitLabel = 'Enter the Arena →'
+  if (isSignInLoading) {
+    signinSubmitLabel = 'Connecting...'
   }
 
   return (
@@ -34,13 +138,16 @@ export default function RegisterForm() {
 
         <div className="tabs">
           <button
-            className={`tab ${activeTab === 'signin' ? 'active' : ''}`}
-            onClick={() => setActiveTab('signin')}
+            className={signinTabClassName}
+            onClick={() => {
+              setActiveTab('signin')
+              setRegisterSuccess('')
+            }}
           >
             Sign In
           </button>
           <button
-            className={`tab ${activeTab === 'register' ? 'active' : ''}`}
+            className={registerTabClassName}
             onClick={() => setActiveTab('register')}
           >
             Create Account
@@ -55,6 +162,9 @@ export default function RegisterForm() {
           }}
           className="register-form"
         >
+          {registerError && <p className="signin-error">{registerError}</p>}
+          {registerSuccess && <p className="signin-success">{registerSuccess}</p>}
+
           <div className="form-group">
             <label htmlFor="fullName">Full Name</label>
             <div className="input-wrapper">
@@ -92,7 +202,7 @@ export default function RegisterForm() {
             <div className="input-wrapper">
               <span className="input-icon">*</span>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={passwordInputType}
                 id="password"
                 name="password"
                 placeholder="At least 6 characters"
@@ -105,7 +215,7 @@ export default function RegisterForm() {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {passwordToggleLabel}
               </button>
             </div>
           </div>
@@ -115,7 +225,7 @@ export default function RegisterForm() {
             <div className="input-wrapper">
               <span className="input-icon">*</span>
               <input
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={confirmPasswordInputType}
                 id="confirmPassword"
                 name="confirmPassword"
                 placeholder="Repeat your password"
@@ -128,13 +238,13 @@ export default function RegisterForm() {
                 className="toggle-password"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? 'Hide' : 'Show'}
+                {confirmPasswordToggleLabel}
               </button>
             </div>
           </div>
 
-          <button type="submit" className="submit-btn">
-            Create My Account →
+          <button type="submit" className="submit-btn" disabled={isRegisterLoading}>
+            {registerSubmitLabel}
           </button>
         </form>
         )}
@@ -149,6 +259,8 @@ export default function RegisterForm() {
                 type="email"
                 id="signin-email"
                 placeholder="player@hoopstgc.com"
+                value={signinEmail}
+                onChange={e => setSigninEmail(e.target.value)}
               />
             </div>
           </div>
@@ -161,12 +273,21 @@ export default function RegisterForm() {
                 type="password"
                 id="signin-password"
                 placeholder="Enter your password"
+                value={signinPassword}
+                onChange={e => setSigninPassword(e.target.value)}
               />
             </div>
           </div>
 
-          <button type="button" className="submit-btn">
-            Enter the Arena →
+          {signinError && <p className="signin-error">{signinError}</p>}
+
+          <button
+            type="button"
+            className="submit-btn"
+            onClick={handleSignIn}
+            disabled={isSignInLoading}
+          >
+            {signinSubmitLabel}
           </button>
         </div>
         )}

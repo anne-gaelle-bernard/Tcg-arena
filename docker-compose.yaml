@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5433:5432  # On garde 5433 pour éviter les conflits si tu as un autre Postgres installé
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: TCG
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/ # On sépare les données dans un dossier spécifique
+      - ./config:/docker-entrypoint-initdb.d
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+volumes: 
+  postgres_data:

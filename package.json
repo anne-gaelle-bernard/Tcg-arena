@@ -1,16 +1,36 @@
 {
   "scripts": {
     "dev": "vite",
+    "dev:api": "tsx backend/server.ts",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:api": "tsx backend/server.ts",
+    "db:test": "tsx backend/test-db.ts",
+    "db:init": "tsx backend/init-db.ts",
+    "db:check-privileges": "tsx backend/check-db-privileges.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.6.0"
   }
 }
