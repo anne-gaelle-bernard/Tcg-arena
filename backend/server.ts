@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 import authRoutes from './routes/auth';
 
 const app = express();
@@ -8,6 +10,16 @@ const apiPort = Number(process.env.API_PORT || 5000);
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'TCG Arena API Docs',
+  swaggerOptions: { persistAuthorization: true },
+}));
+
+app.get('/api-docs.json', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });

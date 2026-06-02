@@ -30,6 +30,109 @@ async function ensurePlayerRole() {
   return createdRole.rows[0].role_id;
 }
 
+/**
+ * @openapi
+ * tags:
+ *   name: Auth
+ *   description: Authentification et création de compte joueur
+ */
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     PlayerPublic:
+ *       type: object
+ *       properties:
+ *         player_id:
+ *           type: integer
+ *           example: 1
+ *         username:
+ *           type: string
+ *           example: duelmaster42
+ *         mail:
+ *           type: string
+ *           format: email
+ *           example: joueur@tcg-arena.io
+ *         level:
+ *           type: integer
+ *           example: 1
+ *     RegisterResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Account created successfully.
+ *         user:
+ *           $ref: '#/components/schemas/PlayerPublic'
+ *     LoginResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Login successful.
+ *         user:
+ *           $ref: '#/components/schemas/PlayerPublic'
+ *     Error:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Email already used.
+ */
+
+/**
+ * @openapi
+ * /api/auth/register:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Créer un compte joueur
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [username, email, password]
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: duelmaster42
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: joueur@tcg-arena.io
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 6
+ *                 example: secret123
+ *     responses:
+ *       201:
+ *         description: Compte créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RegisterResponse'
+ *       400:
+ *         description: Champ manquant ou mot de passe trop court
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       409:
+ *         description: Email déjà utilisé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/register', async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
@@ -69,6 +172,54 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/auth/login:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Se connecter avec email et mot de passe
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: joueur@tcg-arena.io
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: secret123
+ *     responses:
+ *       200:
+ *         description: Connexion réussie
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
+ *       400:
+ *         description: Email ou mot de passe manquant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Identifiants invalides
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erreur serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
