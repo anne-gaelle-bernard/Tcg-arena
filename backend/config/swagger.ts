@@ -6,7 +6,7 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'TCG Arena API',
       version: '1.0.0',
-      description: 'API REST pour la plateforme TCG Arena — authentification et gestion des joueurs.',
+      description: 'API REST pour la plateforme TCG Arena — authentification, cartes, collection, decks, boosters et administration.',
     },
     servers: [
       {
@@ -15,17 +15,25 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Token JWT obtenu via POST /api/auth/login',
+        },
+      },
       schemas: {
         Error: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Email already used.' },
+            message: { type: 'string', example: 'An error occurred.' },
           },
         },
       },
     },
   },
-  apis: ['./routes/*.ts'],
+  apis: ['./backend/routes/*.ts'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
