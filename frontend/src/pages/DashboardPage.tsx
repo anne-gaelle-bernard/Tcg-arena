@@ -4,6 +4,7 @@ import type { AuthUser } from '../services/authApi'
 type DashboardPageProps = {
   onLogout: () => void
   user: AuthUser
+  onNavigate: (page: string) => void
 }
 
 type MenuItem = {
@@ -22,7 +23,7 @@ type FeaturedCard = {
 
 const menuItems: MenuItem[] = [
   { id: 'play', label: 'Play Now', active: true },
-  { id: 'collection', label: 'My Collection' },
+  { id: 'collection', label: 'Ma Collection' },
   { id: 'market', label: 'Marketplace' },
   { id: 'quests', label: 'Quests' },
   { id: 'leaderboards', label: 'Leaderboards' },
@@ -45,7 +46,7 @@ const featuredCards: FeaturedCard[] = [
   },
 ]
 
-export default function DashboardPage({ onLogout, user }: DashboardPageProps) {
+export default function DashboardPage({ onLogout, user, onNavigate }: DashboardPageProps) {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-bg-orb dashboard-bg-orb-left" />
@@ -94,6 +95,7 @@ export default function DashboardPage({ onLogout, user }: DashboardPageProps) {
                   key={item.id}
                   type="button"
                   className={menuButtonClassName}
+                  onClick={() => onNavigate(item.id)}
                 >
                   {item.label}
                 </button>
