@@ -1,59 +1,54 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { ALL_CARDS, cardCost, type CardData } from '../data/cards'
 import { usePlayerState } from '../store/playerState'
 import type { AuthUser } from '../services/authApi'
 import CardSvg from '../components/collection/CardSvg'
 import '../style/GamePage.css'
 
-type Session   = 1 | 2 | 3 | 4
-type TurnPhase = 'select' | 'revealing' | 'result'
-type GamePhase = 'session-select' | 'battle' | 'game-over'
+type Session = 1 | 2 | 3 | 4
 
-interface RoundData {
-  playerCard:    CardData
-  opponentCard:  CardData
-  playerWon:     boolean
-  playerPower:   number
-  opponentPower: number
+const FIELD_SIZE = 3
+const MAX_HAND   = 6
+const MAX_HP     = 20
+
+const COST_COLOR: Record<number, string> = { 1: '#60a5fa', 2: '#a78bfa', 3: '#f2c94c' }
+
+const SESSION_INFO: Record<Session, { label: string; difficulty: string; levelReq: number }> = {
+  1: { label: 'Session 1', difficulty: 'Facile',    levelReq: 1  },
+  2: { label: 'Session 2', difficulty: 'Moyen',     levelReq: 5  },
+  3: { label: 'Session 3', difficulty: 'Difficile', levelReq: 10 },
+  4: { label: 'Session 4', difficulty: 'Expert',    levelReq: 15 },
 }
 
-interface BattleState {
-  session:        Session
-  deck:           CardData[]
-  hand:           CardData[]
-  opponentPool:   CardData[]
-  diffBonus:      number
-  playerHp:       number
-  opponentHp:     number
-  playerWins:     number
-  opponentWins:   number
-  round:          number
-  energy:         number
-  maxEnergy:      number
-  turnPhase:      TurnPhase
-  playedCard:     CardData | null
-  opponentCard:   CardData | null
-  lastRound:      RoundData | null
-  gameResult:     'win' | 'lose' | null
-  rewardCard:     CardData | null
-  creditsAwarded: number
+interface FieldCard {
+  card:        CardData
+  hasAttacked: boolean
+  uid:         string
 }
 
-const SESSION_INFO: Record<Session, { label: string; difficulty: string; stars: number; levelReq: number }> = {
-  1: { label: 'Session 1', difficulty: 'Facile',    stars: 1, levelReq: 1  },
-  2: { label: 'Session 2', difficulty: 'Moyen',     stars: 2, levelReq: 5  },
-  3: { label: 'Session 3', difficulty: 'Difficile', stars: 3, levelReq: 10 },
-  4: { label: 'Session 4', difficulty: 'Expert',    stars: 4, levelReq: 15 },
+interface GameState {
+  session:          Session
+  turn:             number
+  phase:            'play' | 'attack' | 'opponent'
+  energy:           number
+  maxEnergy:        number
+  playerHp:         number
+  opponentHp:       number
+  playerHand:       CardData[]
+  playerDeck:       CardData[]
+  playerField:      (FieldCard | null)[]
+  opponentField:    (FieldCard | null)[]
+  opponentPool:     CardData[]
+  selectedAttacker: number | null
+  diffBonus:        number
+  gameResult:       'win' | 'lose' | null
+  rewardCard:       CardData | null
+  creditsAwarded:   number
+  log:              string
 }
 
-const MAX_HP      = 20
-const ROUND_DMG   = 4
-const MAX_HAND    = 5
-const WINS_NEEDED = 3
-const MAX_ROUNDS  = 5
-
-function roundEnergy(round: number): number {
-  return Math.min(round + 2, 7)
+function roundEnergy(turn: number): number {
+  return Math.min(turn + 2, 7)
 }
 
 function getOpponentPool(session: Session): CardData[] {
@@ -69,82 +64,145 @@ function getDiffBonus(session: Session, level: number): number {
   return (session - 1) * 5 + Math.floor(level / 5) * 2
 }
 
-function buildDeckAndHand(unlockedIds: string[], savedDeck: string[]): { hand: CardData[]; deck: CardData[] } {
-  const customCards = savedDeck
+function buildHand(unlockedIds: string[], savedDeck: string[]): { hand: CardData[]; deck: CardData[] } {
+  const custom = savedDeck
     .map(id => ALL_CARDS.find(c => c.id === id))
     .filter((c): c is CardData => !!c && unlockedIds.includes(c.id))
-
-  let fullDeck: CardData[]
-  if (customCards.length >= MAX_HAND) {
-    fullDeck = [...customCards].sort(() => Math.random() - 0.5)
+  let all: CardData[]
+  if (custom.length >= 5) {
+    all = [...custom].sort(() => Math.random() - 0.5)
   } else {
-    const pool    = ALL_CARDS.filter(c => unlockedIds.includes(c.id))
-    const src     = pool.length >= MAX_HAND ? pool : ALL_CARDS.filter(c => c.theme === 'talents')
-    const legends = src.filter(c => c.theme === 'legends').sort(() => Math.random() - 0.5)
-    const others  = src.filter(c => c.theme !== 'legends').sort(() => Math.random() - 0.5)
-    fullDeck = [...legends.slice(0, 1), ...others].sort(() => Math.random() - 0.5)
+    const pool = ALL_CARDS.filter(c => unlockedIds.includes(c.id))
+    all = (pool.length >= 5 ? pool : ALL_CARDS.filter(c => c.theme === 'talents'))
+          .sort(() => Math.random() - 0.5)
+  }
+  return { hand: all.slice(0, 3), deck: all.slice(3) }
+}
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+let _uid = 0
+function toField(card: CardData): FieldCard {
+  return { card, hasAttacked: false, uid: String(++_uid) }
+}
+
+function directDamage(atk: number): number {
+  return Math.max(1, Math.floor(atk / 20))
+}
+
+function runOpponentTurn(s: GameState): Partial<GameState> {
+  const oppField   = s.opponentField.map(fc => fc ? { ...fc } : null) as (FieldCard | null)[]
+  let playerField  = s.playerField.map(fc => fc ? { ...fc } : null) as (FieldCard | null)[]
+  let playerHp     = s.playerHp
+  const logs: string[] = []
+
+  const emptySlot = oppField.findIndex(f => f === null)
+  if (emptySlot !== -1) {
+    const card = pickRandom(s.opponentPool)
+    oppField[emptySlot] = toField(card)
+    logs.push(`Adversaire joue ${card.name}`)
   }
 
-  return { hand: fullDeck.slice(0, MAX_HAND), deck: fullDeck.slice(MAX_HAND) }
+  oppField.forEach((slot, oi) => {
+    if (!slot) return
+    const atk     = slot.card.atk + s.diffBonus
+    const targets  = playerField.map((f, i) => f ? i : -1).filter(i => i !== -1)
+    if (targets.length > 0) {
+      const ti      = targets[0]
+      const target  = playerField[ti]!
+      if (atk >= target.card.def) {
+        playerField[ti] = null
+        logs.push(`${slot.card.name} détruit ${target.card.name}`)
+      } else {
+        oppField[oi] = null
+        logs.push(`${target.card.name} résiste à ${slot.card.name}`)
+      }
+    } else {
+      const dmg  = directDamage(atk)
+      playerHp   = Math.max(0, playerHp - dmg)
+      logs.push(`Attaque directe -${dmg} PV`)
+    }
+  })
+
+  let newHand = [...s.playerHand]
+  let newDeck = [...s.playerDeck]
+  if (newDeck.length > 0 && newHand.length < MAX_HAND) {
+    newHand = [...newHand, newDeck.shift()!]
+  }
+
+  const nextTurn   = s.turn + 1
+  const maxEnergy  = roundEnergy(nextTurn)
+  const gameResult = playerHp <= 0 ? 'lose' as const : null
+  const resetField = playerField.map(f => f ? { ...f, hasAttacked: false } : null)
+
+  return {
+    turn:          nextTurn,
+    phase:         'play',
+    energy:        maxEnergy,
+    maxEnergy,
+    playerHp,
+    playerHand:    newHand,
+    playerDeck:    newDeck,
+    playerField:   resetField,
+    opponentField: oppField,
+    selectedAttacker: null,
+    gameResult,
+    log:           logs.join(' · ') || 'Tour adverse terminé',
+  }
 }
 
-function pickRandom(pool: CardData[]): CardData {
-  return pool[Math.floor(Math.random() * pool.length)]
-}
-
-function resolveRound(pc: CardData, oc: CardData, bonus: number): RoundData {
-  const pp = pc.atk + Math.floor(Math.random() * 12)
-  const op = oc.score + bonus + Math.floor(Math.random() * 10)
-  return { playerCard: pc, opponentCard: oc, playerWon: pp > op, playerPower: pp, opponentPower: op }
-}
-
-function getSession1Drop(unlockedIds: string[]): CardData | null {
-  if (Math.random() > 0.4) return null
-  const avail = ALL_CARDS.filter(c => c.theme === 'legends' && !unlockedIds.includes(c.id))
-  return avail.length ? avail[Math.floor(Math.random() * avail.length)] : null
-}
-
-function BoardCard({ card, side }: { card: CardData; side: 'player' | 'opponent' }) {
+function HpBar({ hp, max, label, side }: { hp: number; max: number; label: string; side: 'player' | 'opponent' }) {
+  const pct = Math.max(0, (hp / max) * 100)
   return (
-    <div className={`board-card board-card-${side}`}>
-      <CardSvg card={card} width={118} />
+    <div className={`hp-bar hp-bar-${side}`}>
+      <span className="hp-bar-label">{label}</span>
+      <div className="hp-bar-track">
+        <div className="hp-bar-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <span className="hp-bar-num">{hp}</span>
     </div>
   )
 }
 
-const COST_COLOR: Record<number, string> = { 1: '#60a5fa', 2: '#a78bfa', 3: '#f2c94c' }
-
-function HandCard({ card, onClick, disabled, energy }: {
-  card: CardData; onClick: () => void; disabled: boolean; energy: number
+function FieldSlot({ slot, selectable, selected, targetable, onClick }: {
+  slot:       FieldCard | null
+  selectable: boolean
+  selected:   boolean
+  targetable: boolean
+  onClick:    () => void
 }) {
-  const cost       = cardCost(card)
-  const cantAfford = energy < cost
-  const isDisabled = disabled || cantAfford
+  const cls = [
+    'field-slot',
+    !slot ? 'field-slot-empty' : '',
+    selectable ? 'field-slot-selectable' : '',
+    selected   ? 'field-slot-selected'   : '',
+    targetable ? 'field-slot-targetable' : '',
+    slot?.hasAttacked ? 'field-slot-tapped' : '',
+  ].filter(Boolean).join(' ')
+
   return (
     <button
       type="button"
-      className={`hand-card${isDisabled ? ' hc-disabled' : ''}${cantAfford && !disabled ? ' hc-no-energy' : ''}`}
+      className={cls}
       onClick={onClick}
-      disabled={isDisabled}
+      disabled={!selectable && !targetable}
     >
-      <CardSvg card={card} width={76} />
-      <div className="hc-cost-badge" style={{ background: COST_COLOR[cost] }}>
-        {cost}
-      </div>
+      {slot ? (
+        <>
+          <CardSvg card={slot.card} width={82} />
+          <div className="slot-stats">
+            <span className="slot-atk">{slot.card.atk}</span>
+            <span className="slot-sep">/</span>
+            <span className="slot-def">{slot.card.def}</span>
+          </div>
+          {slot.hasAttacked && <div className="tapped-overlay">ATQ</div>}
+        </>
+      ) : (
+        <span className="slot-empty-text">–</span>
+      )}
     </button>
-  )
-}
-
-function HpOrb({ hp, max, side }: { hp: number; max: number; side: 'player' | 'opponent' }) {
-  const pct = Math.max(0, hp / max)
-  return (
-    <div className={`hp-orb hp-orb-${side}`}>
-      <svg viewBox="0 0 44 44" className="hp-ring">
-        <circle cx="22" cy="22" r="18" className="hp-ring-bg" />
-        <circle cx="22" cy="22" r="18" className={`hp-ring-fill hp-ring-fill-${side}`} strokeDasharray={`${pct * 113} 113`} />
-      </svg>
-      <span className="hp-number">{hp}</span>
-    </div>
   )
 }
 
@@ -152,130 +210,179 @@ type Props = { user: AuthUser; onBack: () => void }
 
 export default function GamePage({ user, onBack }: Props) {
   const { state, unlockCard, recordMatch } = usePlayerState()
-  const [gamePhase, setGamePhase] = useState<GamePhase>('session-select')
-  const [battle, setBattle]       = useState<BattleState | null>(null)
+  const [pagePhase, setPagePhase] = useState<'session-select' | 'battle' | 'game-over'>('session-select')
+  const [gs, setGs]               = useState<GameState | null>(null)
+  const gameOverHandled            = useRef(false)
 
   useEffect(() => {
-    if (!battle || battle.turnPhase !== 'revealing') return
+    if (!gs || gs.phase !== 'opponent') return
     const t = setTimeout(() => {
-      setBattle(prev => {
-        if (!prev || !prev.playedCard) return prev
-        const oc    = pickRandom(prev.opponentPool)
-        const round = resolveRound(prev.playedCard, oc, prev.diffBonus)
-        const pWins = prev.playerWins   + (round.playerWon ? 1 : 0)
-        const oWins = prev.opponentWins + (round.playerWon ? 0 : 1)
-        const pHp   = round.playerWon ? prev.playerHp : Math.max(0, prev.playerHp - ROUND_DMG)
-        const oHp   = round.playerWon ? Math.max(0, prev.opponentHp - ROUND_DMG) : prev.opponentHp
-        const done  = pWins >= WINS_NEEDED || oWins >= WINS_NEEDED || prev.round >= MAX_ROUNDS || pHp <= 0 || oHp <= 0
-        return {
-          ...prev,
-          opponentCard: oc,
-          lastRound:    round,
-          playerWins:   pWins,
-          opponentWins: oWins,
-          playerHp:     pHp,
-          opponentHp:   oHp,
-          turnPhase:    'result',
-          gameResult:   done ? (pWins >= oWins && pHp > 0 ? 'win' : 'lose') : null,
-        }
+      setGs(prev => {
+        if (!prev || prev.phase !== 'opponent') return prev
+        return { ...prev, ...runOpponentTurn(prev) }
       })
-    }, 700)
+    }, 900)
     return () => clearTimeout(t)
-  }, [battle])
+  }, [gs?.phase, gs?.turn])
+
+  useEffect(() => {
+    if (!gs?.gameResult || gameOverHandled.current) return
+    gameOverHandled.current = true
+    const won     = gs.gameResult === 'win'
+    const credits = recordMatch(won)
+    let rewardCard: CardData | null = null
+    if (won && gs.session === 1) {
+      const avail = ALL_CARDS.filter(c => c.theme === 'legends' && !state.unlockedIds.includes(c.id))
+      if (avail.length && Math.random() > 0.6) {
+        rewardCard = pickRandom(avail)
+        unlockCard(rewardCard.id)
+      }
+    }
+    setGs(prev => prev ? { ...prev, creditsAwarded: credits, rewardCard } : prev)
+    setPagePhase('game-over')
+  }, [gs?.gameResult])
 
   const startGame = useCallback((session: Session) => {
-    const { hand, deck } = buildDeckAndHand(state.unlockedIds, state.savedDeck)
-    const initEnergy = roundEnergy(1)
-    setBattle({
+    gameOverHandled.current = false
+    const { hand, deck } = buildHand(state.unlockedIds, state.savedDeck)
+    const e = roundEnergy(1)
+    setGs({
       session,
-      deck,
-      hand,
-      opponentPool:   getOpponentPool(session),
-      diffBonus:      getDiffBonus(session, user.level),
-      playerHp:       MAX_HP,
-      opponentHp:     MAX_HP,
-      playerWins:     0,
-      opponentWins:   0,
-      round:          1,
-      energy:         initEnergy,
-      maxEnergy:      initEnergy,
-      turnPhase:      'select',
-      playedCard:     null,
-      opponentCard:   null,
-      lastRound:      null,
-      gameResult:     null,
-      rewardCard:     null,
+      turn:          1,
+      phase:         'play',
+      energy:        e,
+      maxEnergy:     e,
+      playerHp:      MAX_HP,
+      opponentHp:    MAX_HP,
+      playerHand:    hand,
+      playerDeck:    deck,
+      playerField:   [null, null, null],
+      opponentField: [null, null, null],
+      opponentPool:  getOpponentPool(session),
+      selectedAttacker: null,
+      diffBonus:     getDiffBonus(session, user.level),
+      gameResult:    null,
+      rewardCard:    null,
       creditsAwarded: 0,
+      log:           'Jouez des cartes depuis votre main',
     })
-    setGamePhase('battle')
+    setPagePhase('battle')
   }, [state.unlockedIds, state.savedDeck, user.level])
 
-  const playCard = useCallback((card: CardData) => {
-    setBattle(prev => {
-      if (!prev || prev.turnPhase !== 'select') return prev
+  const playCard = useCallback((card: CardData, idx: number) => {
+    setGs(prev => {
+      if (!prev || prev.phase !== 'play') return prev
       if (prev.energy < cardCost(card)) return prev
+      const emptySlot = prev.playerField.findIndex(s => s === null)
+      if (emptySlot === -1) return prev
+      const newField = [...prev.playerField]
+      newField[emptySlot] = toField(card)
       return {
         ...prev,
-        hand:       prev.hand.filter(c => c.id !== card.id),
-        playedCard: card,
-        energy:     prev.energy - cardCost(card),
-        turnPhase:  'revealing',
+        energy:      prev.energy - cardCost(card),
+        playerHand:  prev.playerHand.filter((_, i) => i !== idx),
+        playerField: newField,
+        log:         `${card.name} posé sur le terrain`,
       }
     })
   }, [])
 
-  const nextRound = useCallback(() => {
-    setBattle(prev => {
-      if (!prev || !prev.lastRound) return prev
-
-      if (prev.gameResult) {
-        const credits = recordMatch(prev.gameResult === 'win')
-        let reward: CardData | null = null
-        if (prev.gameResult === 'win' && prev.session === 1) {
-          reward = getSession1Drop(state.unlockedIds)
-          if (reward) unlockCard(reward.id)
-        }
-        setGamePhase('game-over')
-        return { ...prev, rewardCard: reward, creditsAwarded: credits }
-      }
-
-      let newDeck = [...prev.deck]
-      let newHand = [...prev.hand]
-      if (newDeck.length > 0 && newHand.length < MAX_HAND) {
-        newHand = [...newHand, newDeck.shift()!]
-      }
-
-      const next = prev.round + 1
+  const toggleAttacker = useCallback((slotIdx: number) => {
+    setGs(prev => {
+      if (!prev || prev.phase !== 'attack') return prev
+      const slot = prev.playerField[slotIdx]
+      if (!slot || slot.hasAttacked) return prev
+      const next = prev.selectedAttacker === slotIdx ? null : slotIdx
       return {
         ...prev,
-        deck:         newDeck,
-        hand:         newHand,
-        round:        next,
-        energy:       roundEnergy(next),
-        maxEnergy:    roundEnergy(next),
-        turnPhase:    'select',
-        playedCard:   null,
-        opponentCard: null,
+        selectedAttacker: next,
+        log: next !== null ? `${slot.card.name} — choisissez une cible` : 'Sélectionnez un attaquant',
       }
     })
-  }, [recordMatch, state.unlockedIds, unlockCard])
+  }, [])
 
-  if (gamePhase === 'session-select') {
+  const attackOpponentCard = useCallback((targetIdx: number) => {
+    setGs(prev => {
+      if (!prev || prev.phase !== 'attack' || prev.selectedAttacker === null) return prev
+      const attSlot = prev.playerField[prev.selectedAttacker]
+      const defSlot = prev.opponentField[targetIdx]
+      if (!attSlot || !defSlot) return prev
+
+      const newPF = [...prev.playerField]
+      const newOF = [...prev.opponentField]
+      let log = ''
+
+      if (attSlot.card.atk >= defSlot.card.def) {
+        newOF[targetIdx] = null
+        newPF[prev.selectedAttacker] = { ...attSlot, hasAttacked: true }
+        log = `${attSlot.card.name} détruit ${defSlot.card.name}`
+      } else {
+        newPF[prev.selectedAttacker] = null
+        log = `${defSlot.card.name} résiste — ${attSlot.card.name} détruit`
+      }
+
+      const newOppHp   = prev.opponentHp
+      const gameResult = newOppHp <= 0 ? 'win' as const : null
+
+      return {
+        ...prev,
+        playerField:      newPF,
+        opponentField:    newOF,
+        opponentHp:       newOppHp,
+        selectedAttacker: null,
+        gameResult,
+        log,
+      }
+    })
+  }, [])
+
+  const attackDirect = useCallback(() => {
+    setGs(prev => {
+      if (!prev || prev.phase !== 'attack' || prev.selectedAttacker === null) return prev
+      if (prev.opponentField.some(s => s !== null)) return prev
+      const attSlot = prev.playerField[prev.selectedAttacker]
+      if (!attSlot) return prev
+
+      const dmg      = directDamage(attSlot.card.atk)
+      const newOppHp = Math.max(0, prev.opponentHp - dmg)
+      const newPF    = [...prev.playerField]
+      newPF[prev.selectedAttacker] = { ...attSlot, hasAttacked: true }
+      const gameResult = newOppHp <= 0 ? 'win' as const : null
+
+      return {
+        ...prev,
+        opponentHp:       newOppHp,
+        playerField:      newPF,
+        selectedAttacker: null,
+        gameResult,
+        log:              `Attaque directe — -${dmg} PV à l'adversaire`,
+      }
+    })
+  }, [])
+
+  const endTurn = useCallback(() => {
+    setGs(prev => {
+      if (!prev) return prev
+      return { ...prev, phase: 'opponent', selectedAttacker: null, log: 'Tour adverse...' }
+    })
+  }, [])
+
+  if (pagePhase === 'session-select') {
     return (
       <div className="game-shell">
         <div className="game-topbar">
           <button type="button" className="btn-back" onClick={onBack}>← Retour</button>
-          <span className="topbar-title">HOOPS TCG — CHOISIR UNE SESSION</span>
+          <span className="topbar-title">HOOPS TCG</span>
         </div>
         <div className="session-select-screen">
-          <h2 className="ss-title">Sélectionnez votre Session</h2>
+          <h2 className="ss-title">Choisir une session</h2>
           <div className="ss-grid">
             {([1, 2, 3, 4] as Session[]).map(s => {
               const info = SESSION_INFO[s]
               return (
                 <button type="button" key={s} className={`ss-card ss-card-${s}`} onClick={() => startGame(s)}>
                   <span className="ss-num">{info.label}</span>
-                  <span className="ss-stars">{info.stars}/4</span>
+                  <span className="ss-stars">{s}/4</span>
                   <span className="ss-diff">{info.difficulty}</span>
                   <span className="ss-lvl">Niv. {info.levelReq}+</span>
                   {s === 1 && <span className="ss-drop">DROP LIMITÉ</span>}
@@ -284,138 +391,162 @@ export default function GamePage({ user, onBack }: Props) {
             })}
           </div>
           <p className="ss-hint">
-            Niveau : <strong>{user.level}</strong> ·{' '}
+            Niv. <strong>{user.level}</strong> ·{' '}
             {state.savedDeck.length >= 5
-              ? <>Deck perso : <strong>{state.savedDeck.length}</strong> cartes</>
-              : <>Pas de deck — construis-en un depuis le menu !</>
-            }{' '}· Main de <strong>{MAX_HAND}</strong> max
+              ? <>Deck : <strong>{state.savedDeck.length}</strong> cartes</>
+              : <>Pas de deck sauvegardé</>
+            }
           </p>
         </div>
       </div>
     )
   }
 
-  if (gamePhase === 'game-over' && battle) {
-    const won = battle.gameResult === 'win'
+  if (pagePhase === 'game-over' && gs) {
+    const won = gs.gameResult === 'win'
     return (
       <div className="game-shell">
         <div className="game-topbar">
-          <span className="topbar-title">{SESSION_INFO[battle.session].label} — Résultat final</span>
+          <span className="topbar-title">{SESSION_INFO[gs.session].label} — Résultat</span>
         </div>
         <div className="game-over-screen">
           <h2 className={`go-title ${won ? 'go-win' : 'go-lose'}`}>
             {won ? 'VICTOIRE !' : 'DÉFAITE'}
           </h2>
-          <p className="go-score">{battle.playerWins} – {battle.opponentWins}</p>
-          <p className="go-hp">PV finaux — Vous : {battle.playerHp} · Adversaire : {battle.opponentHp}</p>
+          <p className="go-hp">PV finaux — Vous : {gs.playerHp} · Adversaire : {gs.opponentHp}</p>
           <div className="go-rewards">
-            {won && battle.session === 1 && (
-              battle.rewardCard
-                ? <div className="reward-pill reward-card">Drop : <strong>{battle.rewardCard.name}</strong> ({battle.rewardCard.theme})</div>
-                : <p className="reward-miss">Pas de drop cette fois — retente !</p>
+            {gs.rewardCard && (
+              <div className="reward-pill reward-card">Drop : <strong>{gs.rewardCard.name}</strong></div>
             )}
-            {battle.creditsAwarded > 0 && (
-              <div className="reward-pill reward-credits">+{battle.creditsAwarded} crédits (consolation 5 défaites)</div>
+            {gs.creditsAwarded > 0 && (
+              <div className="reward-pill reward-credits">+{gs.creditsAwarded} crédits</div>
             )}
-            {!won && battle.creditsAwarded === 0 && (
-              <p className="go-streak">Série de défaites : {state.lossStreak}/5 — à 5 tu gagnes 10 crédits !</p>
+            {!won && !gs.creditsAwarded && (
+              <p className="go-streak">Série de défaites : {state.lossStreak}/5</p>
             )}
           </div>
           <div className="go-actions">
-            <button type="button" className="btn-primary"   onClick={() => startGame(battle.session)}>Rejouer</button>
-            <button type="button" className="btn-secondary" onClick={() => setGamePhase('session-select')}>Changer de session</button>
-            <button type="button" className="btn-ghost"     onClick={onBack}>Menu principal</button>
+            <button type="button" className="btn-primary"   onClick={() => startGame(gs.session)}>Rejouer</button>
+            <button type="button" className="btn-secondary" onClick={() => setPagePhase('session-select')}>Sessions</button>
+            <button type="button" className="btn-ghost"     onClick={onBack}>Menu</button>
           </div>
         </div>
       </div>
     )
   }
 
-  if (gamePhase === 'battle' && battle) {
-    const info     = SESSION_INFO[battle.session]
-    const isSelect = battle.turnPhase === 'select'
-    const isReveal = battle.turnPhase === 'revealing'
-    const isResult = battle.turnPhase === 'result'
+  if (pagePhase === 'battle' && gs) {
+    const info        = SESSION_INFO[gs.session]
+    const isPlay      = gs.phase === 'play'
+    const isAttack    = gs.phase === 'attack'
+    const isOpponent  = gs.phase === 'opponent'
+    const hasSelected = gs.selectedAttacker !== null
+    const oppHasCards = gs.opponentField.some(s => s !== null)
+    const allAttacked = gs.playerField.every(s => !s || s.hasAttacked)
+    const fieldFull   = gs.playerField.every(s => s !== null)
 
     return (
       <div className="game-shell">
         <div className="game-topbar">
-          <button type="button" className="btn-back" onClick={() => setGamePhase('session-select')}>← Sessions</button>
-          <span className="topbar-title">{info.label} — Round {battle.round}/{MAX_ROUNDS}</span>
-          <div className="topbar-score">
-            <span className="score-p">{battle.playerWins}</span>
-            <span className="score-sep">–</span>
-            <span className="score-o">{battle.opponentWins}</span>
-          </div>
+          <button type="button" className="btn-back" onClick={() => setPagePhase('session-select')}>← Sessions</button>
+          <span className="topbar-title">{info.label} — Tour {gs.turn}</span>
         </div>
 
         <div className="board">
-          <div className="board-half board-half-opponent">
-            <HpOrb hp={battle.opponentHp} max={MAX_HP} side="opponent" />
-            <div className="board-zone board-zone-opponent">
-              {(isReveal || isResult) && battle.opponentCard
-                ? <BoardCard card={battle.opponentCard} side="opponent" />
-                : <div className="zone-placeholder"><span>?</span></div>
-              }
-            </div>
-            <div className="board-label">ADVERSAIRE</div>
+          <HpBar hp={gs.opponentHp} max={MAX_HP} label="Adversaire" side="opponent" />
+
+          <div className="field-row field-row-opponent">
+            {gs.opponentField.map((slot, i) => (
+              <FieldSlot
+                key={i}
+                slot={slot}
+                selectable={false}
+                selected={false}
+                targetable={isAttack && hasSelected && !!slot}
+                onClick={() => attackOpponentCard(i)}
+              />
+            ))}
           </div>
 
           <div className="board-divider">
             <div className="divider-line" />
-            {isResult && battle.lastRound && (
-              <div className={`round-verdict-badge ${battle.lastRound.playerWon ? 'verdict-win' : 'verdict-lose'}`}>
-                {battle.lastRound.playerWon ? 'ROUND GAGNÉ' : 'ROUND PERDU'}
-              </div>
-            )}
-            {isReveal && <div className="round-verdict-badge verdict-thinking">Adversaire joue…</div>}
+            <div className={`phase-badge ${isOpponent ? 'phase-opponent' : isAttack ? 'phase-attack' : 'phase-play'}`}>
+              {isOpponent ? 'Tour adverse' : isAttack ? 'Phase attaque' : 'Phase de jeu'}
+            </div>
           </div>
 
-          <div className="board-half board-half-player">
-            <div className="board-label">VOUS</div>
-            <div className="board-zone board-zone-player">
-              {(isReveal || isResult) && battle.playedCard
-                ? <BoardCard card={battle.playedCard} side="player" />
-                : <div className="zone-placeholder"><span>Jouez une carte</span></div>
-              }
-            </div>
-            <HpOrb hp={battle.playerHp} max={MAX_HP} side="player" />
+          <div className="field-row field-row-player">
+            {gs.playerField.map((slot, i) => (
+              <FieldSlot
+                key={i}
+                slot={slot}
+                selectable={isAttack && !!slot && !slot.hasAttacked}
+                selected={gs.selectedAttacker === i}
+                targetable={false}
+                onClick={() => toggleAttacker(i)}
+              />
+            ))}
           </div>
+
+          <HpBar hp={gs.playerHp} max={MAX_HP} label="Vous" side="player" />
         </div>
 
         <div className="hand-bar">
           <div className="turn-indicator">
-            {isSelect && <span className="turn-badge turn-you">VOTRE TOUR</span>}
-            {isReveal && <span className="turn-badge turn-wait">EN ATTENTE…</span>}
-            {isResult && (
-              <button type="button" className="btn-next" onClick={nextRound}>
-                {battle.gameResult ? 'Résultat →' : 'Suivant →'}
-              </button>
-            )}
             <div className="energy-bar">
-              {Array.from({ length: battle.maxEnergy }).map((_, i) => (
-                <span key={i} className={`energy-crystal${i < battle.energy ? ' ec-full' : ' ec-empty'}`} />
+              {Array.from({ length: gs.maxEnergy }).map((_, i) => (
+                <span key={i} className={`energy-crystal${i < gs.energy ? ' ec-full' : ' ec-empty'}`} />
               ))}
-              <span className="energy-label">{battle.energy}/{battle.maxEnergy}</span>
+              <span className="energy-label">{gs.energy}/{gs.maxEnergy}</span>
             </div>
-            <span className="deck-count">Deck : {battle.deck.length} · Main : {battle.hand.length}</span>
+            <span className="deck-count">Deck : {gs.playerDeck.length} · Main : {gs.playerHand.length}</span>
+
+            <div className="phase-actions">
+              {isPlay && (
+                <button
+                  type="button"
+                  className="btn-phase btn-attack-phase"
+                  onClick={() => setGs(prev => prev ? { ...prev, phase: 'attack', selectedAttacker: null, log: 'Sélectionnez un attaquant' } : prev)}
+                >
+                  Attaquer
+                </button>
+              )}
+              {isAttack && hasSelected && !oppHasCards && (
+                <button type="button" className="btn-phase btn-direct" onClick={attackDirect}>
+                  Attaque directe
+                </button>
+              )}
+              {(isPlay || (isAttack && allAttacked)) && !isOpponent && (
+                <button type="button" className="btn-phase btn-endturn" onClick={endTurn}>
+                  Fin de tour
+                </button>
+              )}
+            </div>
+
+            <p className="game-log">{gs.log}</p>
           </div>
 
           <div className="hand-cards">
-            {battle.hand.map(card => (
-              <HandCard key={card.id} card={card} onClick={() => playCard(card)} disabled={!isSelect} energy={battle.energy} />
-            ))}
-            {battle.hand.length === 0 && <p className="deck-empty">Deck vide !</p>}
+            {gs.playerHand.map((card, i) => {
+              const cost       = cardCost(card)
+              const cantAfford = gs.energy < cost
+              const disabled   = !isPlay || cantAfford || fieldFull || isOpponent
+              return (
+                <button
+                  key={card.id + i}
+                  type="button"
+                  className={`hand-card${disabled ? ' hc-disabled' : ''}${cantAfford && isPlay ? ' hc-no-energy' : ''}`}
+                  onClick={() => !disabled && playCard(card, i)}
+                  disabled={disabled}
+                >
+                  <CardSvg card={card} width={72} />
+                  <div className="hc-cost-badge" style={{ background: COST_COLOR[cost] }}>{cost}</div>
+                </button>
+              )
+            })}
+            {gs.playerHand.length === 0 && <p className="deck-empty">Main vide</p>}
           </div>
         </div>
-
-        {isResult && battle.lastRound && (
-          <div className="power-banner">
-            <span>Votre puissance : <strong>{battle.lastRound.playerPower}</strong></span>
-            <span className="power-vs">VS</span>
-            <span>Adversaire : <strong>{battle.lastRound.opponentPower}</strong></span>
-          </div>
-        )}
       </div>
     )
   }
