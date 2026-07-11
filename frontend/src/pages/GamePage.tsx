@@ -6,10 +6,10 @@ import CardSvg from '../components/collection/CardSvg'
 import '../style/GamePage.css'
 
 type Session = 1 | 2 | 3 | 4
+type Phase   = 'player' | 'opponent'
 
-const FIELD_SIZE = 3
-const MAX_HAND   = 6
-const MAX_HP     = 20
+const MAX_HAND = 6
+const MAX_HP   = 20
 
 const COST_COLOR: Record<number, string> = { 1: '#60a5fa', 2: '#a78bfa', 3: '#f2c94c' }
 
@@ -29,7 +29,7 @@ interface FieldCard {
 interface GameState {
   session:          Session
   turn:             number
-  phase:            'play' | 'attack' | 'opponent'
+  phase:            Phase
   energy:           number
   maxEnergy:        number
   playerHp:         number
@@ -88,14 +88,14 @@ function toField(card: CardData): FieldCard {
   return { card, hasAttacked: false, uid: String(++_uid) }
 }
 
-function directDamage(atk: number): number {
+function directDmg(atk: number): number {
   return Math.max(1, Math.floor(atk / 20))
 }
 
 function runOpponentTurn(s: GameState): Partial<GameState> {
-  const oppField   = s.opponentField.map(fc => fc ? { ...fc } : null) as (FieldCard | null)[]
-  let playerField  = s.playerField.map(fc => fc ? { ...fc } : null) as (FieldCard | null)[]
-  let playerHp     = s.playerHp
+  const oppField  = s.opponentField.map(f => f ? { ...f } : null) as (FieldCard | null)[]
+  let playerField = s.playerField.map(f => f ? { ...f } : null) as (FieldCard | null)[]
+  let playerHp    = s.playerHp
   const logs: string[] = []
 
   const emptySlot = oppField.findIndex(f => f === null)
@@ -107,22 +107,22 @@ function runOpponentTurn(s: GameState): Partial<GameState> {
 
   oppField.forEach((slot, oi) => {
     if (!slot) return
-    const atk     = slot.card.atk + s.diffBonus
-    const targets  = playerField.map((f, i) => f ? i : -1).filter(i => i !== -1)
-    if (targets.length > 0) {
-      const ti      = targets[0]
-      const target  = playerField[ti]!
-      if (atk >= target.card.def) {
+    const atk    = slot.card.atk + s.diffBonus
+    const tgts   = playerField.map((f, i) => f ? i : -1).filter(i => i !== -1)
+    if (tgts.length > 0) {
+      const ti = tgts[0]
+      const tg = playerField[ti]!
+      if (atk >= tg.card.def) {
         playerField[ti] = null
-        logs.push(`${slot.card.name} détruit ${target.card.name}`)
+        logs.push(`${slot.card.name} détruit ${tg.card.name}`)
       } else {
         oppField[oi] = null
-        logs.push(`${target.card.name} résiste à ${slot.card.name}`)
+        logs.push(`${tg.card.name} résiste — ${slot.card.name} détruit`)
       }
     } else {
-      const dmg  = directDamage(atk)
+      const dmg  = directDmg(atk)
       playerHp   = Math.max(0, playerHp - dmg)
-      logs.push(`Attaque directe -${dmg} PV`)
+      logs.push(`Attaque directe : -${dmg} PV`)
     }
   })
 
@@ -139,7 +139,7 @@ function runOpponentTurn(s: GameState): Partial<GameState> {
 
   return {
     turn:          nextTurn,
-    phase:         'play',
+    phase:         'player',
     energy:        maxEnergy,
     maxEnergy,
     playerHp,
@@ -149,7 +149,7 @@ function runOpponentTurn(s: GameState): Partial<GameState> {
     opponentField: oppField,
     selectedAttacker: null,
     gameResult,
-    log:           logs.join(' · ') || 'Tour adverse terminé',
+    log: logs.join(' · ') || 'Tour adverse terminé — à vous !',
   }
 }
 
@@ -175,10 +175,10 @@ function FieldSlot({ slot, selectable, selected, targetable, onClick }: {
 }) {
   const cls = [
     'field-slot',
-    !slot ? 'field-slot-empty' : '',
-    selectable ? 'field-slot-selectable' : '',
-    selected   ? 'field-slot-selected'   : '',
-    targetable ? 'field-slot-targetable' : '',
+    !slot        ? 'field-slot-empty'      : '',
+    selectable   ? 'field-slot-selectable' : '',
+    selected     ? 'field-slot-selected'   : '',
+    targetable   ? 'field-slot-targetable' : '',
     slot?.hasAttacked ? 'field-slot-tapped' : '',
   ].filter(Boolean).join(' ')
 
@@ -212,7 +212,7 @@ export default function GamePage({ user, onBack }: Props) {
   const { state, unlockCard, recordMatch } = usePlayerState()
   const [pagePhase, setPagePhase] = useState<'session-select' | 'battle' | 'game-over'>('session-select')
   const [gs, setGs]               = useState<GameState | null>(null)
-  const gameOverHandled            = useRef(false)
+  const goHandled                  = useRef(false)
 
   useEffect(() => {
     if (!gs || gs.phase !== 'opponent') return
@@ -221,13 +221,13 @@ export default function GamePage({ user, onBack }: Props) {
         if (!prev || prev.phase !== 'opponent') return prev
         return { ...prev, ...runOpponentTurn(prev) }
       })
-    }, 900)
+    }, 1000)
     return () => clearTimeout(t)
   }, [gs?.phase, gs?.turn])
 
   useEffect(() => {
-    if (!gs?.gameResult || gameOverHandled.current) return
-    gameOverHandled.current = true
+    if (!gs?.gameResult || goHandled.current) return
+    goHandled.current = true
     const won     = gs.gameResult === 'win'
     const credits = recordMatch(won)
     let rewardCard: CardData | null = null
@@ -243,13 +243,13 @@ export default function GamePage({ user, onBack }: Props) {
   }, [gs?.gameResult])
 
   const startGame = useCallback((session: Session) => {
-    gameOverHandled.current = false
+    goHandled.current = false
     const { hand, deck } = buildHand(state.unlockedIds, state.savedDeck)
     const e = roundEnergy(1)
     setGs({
       session,
       turn:          1,
-      phase:         'play',
+      phase:         'player',
       energy:        e,
       maxEnergy:     e,
       playerHp:      MAX_HP,
@@ -264,73 +264,69 @@ export default function GamePage({ user, onBack }: Props) {
       gameResult:    null,
       rewardCard:    null,
       creditsAwarded: 0,
-      log:           'Jouez des cartes depuis votre main',
+      log:           'Jouez des cartes ou attaquez, puis cliquez Fin de tour',
     })
     setPagePhase('battle')
   }, [state.unlockedIds, state.savedDeck, user.level])
 
-  const playCard = useCallback((card: CardData, idx: number) => {
+  const playCard = useCallback((card: CardData, handIdx: number) => {
     setGs(prev => {
-      if (!prev || prev.phase !== 'play') return prev
+      if (!prev || prev.phase !== 'player') return prev
       if (prev.energy < cardCost(card)) return prev
-      const emptySlot = prev.playerField.findIndex(s => s === null)
-      if (emptySlot === -1) return prev
+      const slot = prev.playerField.findIndex(s => s === null)
+      if (slot === -1) return prev
       const newField = [...prev.playerField]
-      newField[emptySlot] = toField(card)
+      newField[slot] = toField(card)
       return {
         ...prev,
         energy:      prev.energy - cardCost(card),
-        playerHand:  prev.playerHand.filter((_, i) => i !== idx),
+        playerHand:  prev.playerHand.filter((_, i) => i !== handIdx),
         playerField: newField,
+        selectedAttacker: null,
         log:         `${card.name} posé sur le terrain`,
       }
     })
   }, [])
 
-  const toggleAttacker = useCallback((slotIdx: number) => {
+  const selectAttacker = useCallback((slotIdx: number) => {
     setGs(prev => {
-      if (!prev || prev.phase !== 'attack') return prev
+      if (!prev || prev.phase !== 'player') return prev
       const slot = prev.playerField[slotIdx]
       if (!slot || slot.hasAttacked) return prev
       const next = prev.selectedAttacker === slotIdx ? null : slotIdx
       return {
         ...prev,
         selectedAttacker: next,
-        log: next !== null ? `${slot.card.name} — choisissez une cible` : 'Sélectionnez un attaquant',
+        log: next !== null ? `${slot.card.name} prêt à attaquer — choisissez une cible` : 'Sélectionnez un attaquant',
       }
     })
   }, [])
 
-  const attackOpponentCard = useCallback((targetIdx: number) => {
+  const attackCard = useCallback((targetIdx: number) => {
     setGs(prev => {
-      if (!prev || prev.phase !== 'attack' || prev.selectedAttacker === null) return prev
-      const attSlot = prev.playerField[prev.selectedAttacker]
-      const defSlot = prev.opponentField[targetIdx]
-      if (!attSlot || !defSlot) return prev
+      if (!prev || prev.phase !== 'player' || prev.selectedAttacker === null) return prev
+      const att = prev.playerField[prev.selectedAttacker]
+      const def = prev.opponentField[targetIdx]
+      if (!att || !def) return prev
 
       const newPF = [...prev.playerField]
       const newOF = [...prev.opponentField]
       let log = ''
 
-      if (attSlot.card.atk >= defSlot.card.def) {
+      if (att.card.atk >= def.card.def) {
         newOF[targetIdx] = null
-        newPF[prev.selectedAttacker] = { ...attSlot, hasAttacked: true }
-        log = `${attSlot.card.name} détruit ${defSlot.card.name}`
+        newPF[prev.selectedAttacker] = { ...att, hasAttacked: true }
+        log = `${att.card.name} détruit ${def.card.name}`
       } else {
         newPF[prev.selectedAttacker] = null
-        log = `${defSlot.card.name} résiste — ${attSlot.card.name} détruit`
+        log = `${def.card.name} résiste — ${att.card.name} détruit`
       }
-
-      const newOppHp   = prev.opponentHp
-      const gameResult = newOppHp <= 0 ? 'win' as const : null
 
       return {
         ...prev,
         playerField:      newPF,
         opponentField:    newOF,
-        opponentHp:       newOppHp,
         selectedAttacker: null,
-        gameResult,
         log,
       }
     })
@@ -338,32 +334,31 @@ export default function GamePage({ user, onBack }: Props) {
 
   const attackDirect = useCallback(() => {
     setGs(prev => {
-      if (!prev || prev.phase !== 'attack' || prev.selectedAttacker === null) return prev
+      if (!prev || prev.phase !== 'player' || prev.selectedAttacker === null) return prev
       if (prev.opponentField.some(s => s !== null)) return prev
-      const attSlot = prev.playerField[prev.selectedAttacker]
-      if (!attSlot) return prev
+      const att = prev.playerField[prev.selectedAttacker]
+      if (!att) return prev
 
-      const dmg      = directDamage(attSlot.card.atk)
+      const dmg      = directDmg(att.card.atk)
       const newOppHp = Math.max(0, prev.opponentHp - dmg)
       const newPF    = [...prev.playerField]
-      newPF[prev.selectedAttacker] = { ...attSlot, hasAttacked: true }
-      const gameResult = newOppHp <= 0 ? 'win' as const : null
+      newPF[prev.selectedAttacker] = { ...att, hasAttacked: true }
 
       return {
         ...prev,
         opponentHp:       newOppHp,
         playerField:      newPF,
         selectedAttacker: null,
-        gameResult,
-        log:              `Attaque directe — -${dmg} PV à l'adversaire`,
+        gameResult:       newOppHp <= 0 ? 'win' : null,
+        log:              `Attaque directe — -${dmg} PV à l'adversaire (${newOppHp} restants)`,
       }
     })
   }, [])
 
   const endTurn = useCallback(() => {
     setGs(prev => {
-      if (!prev) return prev
-      return { ...prev, phase: 'opponent', selectedAttacker: null, log: 'Tour adverse...' }
+      if (!prev || prev.phase !== 'player') return prev
+      return { ...prev, phase: 'opponent', selectedAttacker: null, log: 'Tour adverse en cours...' }
     })
   }, [])
 
@@ -436,20 +431,17 @@ export default function GamePage({ user, onBack }: Props) {
   }
 
   if (pagePhase === 'battle' && gs) {
-    const info        = SESSION_INFO[gs.session]
-    const isPlay      = gs.phase === 'play'
-    const isAttack    = gs.phase === 'attack'
+    const isPlayer    = gs.phase === 'player'
     const isOpponent  = gs.phase === 'opponent'
     const hasSelected = gs.selectedAttacker !== null
     const oppHasCards = gs.opponentField.some(s => s !== null)
-    const allAttacked = gs.playerField.every(s => !s || s.hasAttacked)
     const fieldFull   = gs.playerField.every(s => s !== null)
 
     return (
       <div className="game-shell">
         <div className="game-topbar">
           <button type="button" className="btn-back" onClick={() => setPagePhase('session-select')}>← Sessions</button>
-          <span className="topbar-title">{info.label} — Tour {gs.turn}</span>
+          <span className="topbar-title">{SESSION_INFO[gs.session].label} — Tour {gs.turn}</span>
         </div>
 
         <div className="board">
@@ -462,16 +454,16 @@ export default function GamePage({ user, onBack }: Props) {
                 slot={slot}
                 selectable={false}
                 selected={false}
-                targetable={isAttack && hasSelected && !!slot}
-                onClick={() => attackOpponentCard(i)}
+                targetable={isPlayer && hasSelected && !!slot}
+                onClick={() => attackCard(i)}
               />
             ))}
           </div>
 
           <div className="board-divider">
             <div className="divider-line" />
-            <div className={`phase-badge ${isOpponent ? 'phase-opponent' : isAttack ? 'phase-attack' : 'phase-play'}`}>
-              {isOpponent ? 'Tour adverse' : isAttack ? 'Phase attaque' : 'Phase de jeu'}
+            <div className={`phase-badge ${isOpponent ? 'phase-opponent' : 'phase-play'}`}>
+              {isOpponent ? 'Tour adverse...' : 'Votre tour'}
             </div>
           </div>
 
@@ -480,10 +472,10 @@ export default function GamePage({ user, onBack }: Props) {
               <FieldSlot
                 key={i}
                 slot={slot}
-                selectable={isAttack && !!slot && !slot.hasAttacked}
+                selectable={isPlayer && !!slot && !slot.hasAttacked}
                 selected={gs.selectedAttacker === i}
                 targetable={false}
-                onClick={() => toggleAttacker(i)}
+                onClick={() => selectAttacker(i)}
               />
             ))}
           </div>
@@ -502,25 +494,19 @@ export default function GamePage({ user, onBack }: Props) {
             <span className="deck-count">Deck : {gs.playerDeck.length} · Main : {gs.playerHand.length}</span>
 
             <div className="phase-actions">
-              {isPlay && (
-                <button
-                  type="button"
-                  className="btn-phase btn-attack-phase"
-                  onClick={() => setGs(prev => prev ? { ...prev, phase: 'attack', selectedAttacker: null, log: 'Sélectionnez un attaquant' } : prev)}
-                >
-                  Attaquer
-                </button>
-              )}
-              {isAttack && hasSelected && !oppHasCards && (
+              {isPlayer && hasSelected && !oppHasCards && (
                 <button type="button" className="btn-phase btn-direct" onClick={attackDirect}>
                   Attaque directe
                 </button>
               )}
-              {(isPlay || (isAttack && allAttacked)) && !isOpponent && (
-                <button type="button" className="btn-phase btn-endturn" onClick={endTurn}>
-                  Fin de tour
-                </button>
-              )}
+              <button
+                type="button"
+                className="btn-phase btn-endturn"
+                onClick={endTurn}
+                disabled={!isPlayer}
+              >
+                Fin de tour
+              </button>
             </div>
 
             <p className="game-log">{gs.log}</p>
@@ -530,12 +516,12 @@ export default function GamePage({ user, onBack }: Props) {
             {gs.playerHand.map((card, i) => {
               const cost       = cardCost(card)
               const cantAfford = gs.energy < cost
-              const disabled   = !isPlay || cantAfford || fieldFull || isOpponent
+              const disabled   = !isPlayer || cantAfford || fieldFull
               return (
                 <button
                   key={card.id + i}
                   type="button"
-                  className={`hand-card${disabled ? ' hc-disabled' : ''}${cantAfford && isPlay ? ' hc-no-energy' : ''}`}
+                  className={`hand-card${disabled ? ' hc-disabled' : ''}${cantAfford && isPlayer ? ' hc-no-energy' : ''}`}
                   onClick={() => !disabled && playCard(card, i)}
                   disabled={disabled}
                 >
