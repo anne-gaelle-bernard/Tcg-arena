@@ -17,7 +17,8 @@ const apiPort = Number(process.env.API_PORT || 5000);
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
   customSiteTitle: 'TCG Arena API Docs',
   swaggerOptions: { persistAuthorization: true },
 }));

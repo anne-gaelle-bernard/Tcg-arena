@@ -2,13 +2,15 @@ services:
   db:
     image: postgres
     ports:
-      - 5433:5432  # On garde 5433 pour éviter les conflits si tu as un autre Postgres installé
+      - 5434:5432  # 5433 is taken by a native PostgreSQL installation
     environment:
       POSTGRES_PASSWORD: admin
       POSTGRES_USER: admin
       POSTGRES_DB: TCG
+      POSTGRES_INITDB_ARGS: "-c password_encryption=md5"
+      POSTGRES_HOST_AUTH_METHOD: "md5"
     volumes:
-      - postgres_data:/var/lib/postgresql # On sépare les données dans un dossier spécifique
+      - postgres_data:/var/lib/postgresql
       - ./config:/docker-entrypoint-initdb.d
   
   adminer:

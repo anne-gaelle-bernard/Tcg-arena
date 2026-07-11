@@ -10,6 +10,9 @@ const pool = new Pool({
   database: String(process.env.DB_NAME || 'TCG'),
   user: String(process.env.DB_USER || 'postgres'),
   password: String(process.env.DB_PASSWORD ?? ''),
+  ssl: false,
+  application_name: 'TCG Arena API',
+  connect_timeout: 10,
 });
 
 export default pool;
