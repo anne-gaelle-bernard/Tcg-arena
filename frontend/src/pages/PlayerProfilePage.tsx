@@ -35,7 +35,7 @@ export default function PlayerProfilePage({ user, onBack }: Props) {
 
         <section className="pp-stats-grid">
           <div className="pp-stat">
-            <span className="pp-stat-val">💰 {state.credits}</span>
+            <span className="pp-stat-val">{state.credits} CR</span>
             <span className="pp-stat-label">Crédits</span>
           </div>
           <div className="pp-stat">
@@ -56,7 +56,7 @@ export default function PlayerProfilePage({ user, onBack }: Props) {
           <h3 className="pp-section-title">COLLECTION</h3>
           <div className="pp-breakdown-list">
             <div className="pp-breakdown-item pp-bd-legends">
-              <span className="pp-bd-label">⭐ Légendes</span>
+              <span className="pp-bd-label">Légendes</span>
               <span className="pp-bd-val">{legendsOwned} / {ALL_CARDS.filter(c => c.theme === 'legends').length}</span>
               <div className="pp-bd-bar">
                 <div
@@ -66,7 +66,7 @@ export default function PlayerProfilePage({ user, onBack }: Props) {
               </div>
             </div>
             <div className="pp-breakdown-item pp-bd-specials">
-              <span className="pp-bd-label">⚡ Spéciales</span>
+              <span className="pp-bd-label">Spéciales</span>
               <span className="pp-bd-val">{specialsOwned} / {ALL_CARDS.filter(c => c.theme === 'specials').length}</span>
               <div className="pp-bd-bar">
                 <div
@@ -76,7 +76,7 @@ export default function PlayerProfilePage({ user, onBack }: Props) {
               </div>
             </div>
             <div className="pp-breakdown-item pp-bd-talents">
-              <span className="pp-bd-label">🏀 Talents</span>
+              <span className="pp-bd-label">Talents</span>
               <span className="pp-bd-val">{talentsOwned} / {ALL_CARDS.filter(c => c.theme === 'talents').length}</span>
               <div className="pp-bd-bar">
                 <div

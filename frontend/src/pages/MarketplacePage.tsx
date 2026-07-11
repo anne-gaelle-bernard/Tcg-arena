@@ -9,7 +9,6 @@ interface PackDef {
   sub:         string
   price:       number
   colorClass:  string
-  lightning:   string
   description: string
   cardCount:   number
   draw:        (unlocked: string[]) => CardData[]
@@ -35,7 +34,6 @@ const PACKS: PackDef[] = [
     sub:         'PACK',
     price:       5,
     colorClass:  'pack-blue',
-    lightning:   '⚡',
     description: '3 cartes Talents aléatoires',
     cardCount:   3,
     draw: (u) => prefer(TALENTS, u, 3),
@@ -46,7 +44,6 @@ const PACKS: PackDef[] = [
     sub:         'PACK',
     price:       10,
     colorClass:  'pack-green',
-    lightning:   '⚡',
     description: '2 Talents + 1 Spéciale',
     cardCount:   3,
     draw: (u) => [...prefer(TALENTS, u, 2), ...prefer(SPECIALS, u, 1)],
@@ -57,7 +54,6 @@ const PACKS: PackDef[] = [
     sub:         'PACK',
     price:       25,
     colorClass:  'pack-orange',
-    lightning:   '⚡',
     description: '1 Talent + 2 Spéciales',
     cardCount:   3,
     draw: (u) => [...prefer(TALENTS, u, 1), ...prefer(SPECIALS, u, 2)],
@@ -68,7 +64,6 @@ const PACKS: PackDef[] = [
     sub:         'PACK',
     price:       40,
     colorClass:  'pack-red',
-    lightning:   '⚡',
     description: '2 Spéciales + 1 Légende garantie',
     cardCount:   3,
     draw: (u) => [...prefer(SPECIALS, u, 2), rnd(prefer(LEGENDS, u, LEGENDS.length) as CardData[]) ?? rnd(LEGENDS)],
@@ -82,7 +77,6 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
       <div className="pack-body">
         <div className="pack-crimp pack-crimp-top" />
         <div className="pack-inner">
-          <div className="pack-lightning">{pack.lightning}</div>
           <div className="pack-name">{pack.name}</div>
           <div className="pack-sub">{pack.sub}</div>
         </div>
@@ -91,7 +85,6 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
 
       <p className="pack-desc">{pack.description}</p>
       <div className="pack-price">
-        <span className="price-icon">💰</span>
         <span className="price-num">{pack.price}</span>
         <span className="price-label">crédits</span>
       </div>
@@ -186,7 +179,6 @@ export default function MarketplacePage({ onBack }: Props) {
         <button type="button" className="mp-back" onClick={onBack}>← Retour</button>
         <h1 className="mp-title">MARKET PLACE</h1>
         <div className="mp-credits">
-          <span className="mp-credits-icon">💰</span>
           <span className="mp-credits-num">{state.credits}</span>
           <span className="mp-credits-label">crédits</span>
         </div>
@@ -207,15 +199,12 @@ export default function MarketplacePage({ onBack }: Props) {
 
         <div className="mp-info">
           <div className="mp-info-item">
-            <span>🃏</span>
             <span>Cartes débloquées : <strong>{state.unlockedIds.length}</strong> / {ALL_CARDS.length}</span>
           </div>
           <div className="mp-info-item">
-            <span>⭐</span>
             <span>Les cartes déjà possédées n'utilisent pas vos crédits</span>
           </div>
           <div className="mp-info-item">
-            <span>🏆</span>
             <span>Gagnez 10 crédits après 5 défaites consécutives</span>
           </div>
         </div>

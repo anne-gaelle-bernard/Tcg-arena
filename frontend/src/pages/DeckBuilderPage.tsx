@@ -47,7 +47,7 @@ export default function DeckBuilderPage({ onBack }: Props) {
         <h1 className="db-title">MON DECK</h1>
         <div className="db-meta">
           <span className="db-count">{deckIds.length} / {DECK_MAX}</span>
-          <span className="db-legends-count">⭐ {legendCount}/{DECK_MAX_LEGENDS} légendes</span>
+          <span className="db-legends-count">{legendCount}/{DECK_MAX_LEGENDS} légendes</span>
         </div>
       </header>
 
@@ -70,9 +70,9 @@ export default function DeckBuilderPage({ onBack }: Props) {
                 >
                   <CardSvg card={card} width={110} />
                   <div className="db-card-cost" style={{ background: costColor[cardCost(card)] }}>
-                    {'⚡'.repeat(cardCost(card))}
+                    {cardCost(card)}
                   </div>
-                  {selected && <div className="db-card-check">✓</div>}
+                  {selected && <div className="db-card-check">OK</div>}
                 </button>
               )
             })}
@@ -96,7 +96,7 @@ export default function DeckBuilderPage({ onBack }: Props) {
                     type="button"
                     className="db-li-remove"
                     onClick={() => toggle(card)}
-                  >✕</button>
+                  >X</button>
                 </li>
               ))}
             </ul>
@@ -104,9 +104,9 @@ export default function DeckBuilderPage({ onBack }: Props) {
 
           <div className="db-sidebar-footer">
             <div className="db-energy-info">
-              <span className="db-ei-row"><span style={{color:'#60a5fa'}}>⚡</span> Talent = 1 énergie</span>
-              <span className="db-ei-row"><span style={{color:'#a78bfa'}}>⚡⚡</span> Spéciale = 2 énergie</span>
-              <span className="db-ei-row"><span style={{color:'#f2c94c'}}>⚡⚡⚡</span> Légende = 3 énergie</span>
+              <span className="db-ei-row"><span style={{color:'#60a5fa'}}>1</span> Talent = 1 énergie</span>
+              <span className="db-ei-row"><span style={{color:'#a78bfa'}}>2</span> Spéciale = 2 énergie</span>
+              <span className="db-ei-row"><span style={{color:'#f2c94c'}}>3</span> Légende = 3 énergie</span>
             </div>
 
             <div className="db-actions">

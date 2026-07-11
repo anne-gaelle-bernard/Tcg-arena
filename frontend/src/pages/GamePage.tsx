@@ -129,7 +129,7 @@ function HandCard({ card, onClick, disabled, energy }: {
     >
       <CardSvg card={card} width={76} />
       <div className="hc-cost-badge" style={{ background: COST_COLOR[cost] }}>
-        {'⚡'.repeat(cost)}
+        {cost}
       </div>
     </button>
   )
@@ -275,10 +275,10 @@ export default function GamePage({ user, onBack }: Props) {
               return (
                 <button type="button" key={s} className={`ss-card ss-card-${s}`} onClick={() => startGame(s)}>
                   <span className="ss-num">{info.label}</span>
-                  <span className="ss-stars">{'★'.repeat(info.stars)}{'☆'.repeat(4 - info.stars)}</span>
+                  <span className="ss-stars">{info.stars}/4</span>
                   <span className="ss-diff">{info.difficulty}</span>
                   <span className="ss-lvl">Niv. {info.levelReq}+</span>
-                  {s === 1 && <span className="ss-drop">⚡ DROP LIMITÉ</span>}
+                  {s === 1 && <span className="ss-drop">DROP LIMITÉ</span>}
                 </button>
               )
             })}
@@ -304,18 +304,18 @@ export default function GamePage({ user, onBack }: Props) {
         </div>
         <div className="game-over-screen">
           <h2 className={`go-title ${won ? 'go-win' : 'go-lose'}`}>
-            {won ? '🏆 VICTOIRE !' : '💀 DÉFAITE'}
+            {won ? 'VICTOIRE !' : 'DÉFAITE'}
           </h2>
           <p className="go-score">{battle.playerWins} – {battle.opponentWins}</p>
           <p className="go-hp">PV finaux — Vous : {battle.playerHp} · Adversaire : {battle.opponentHp}</p>
           <div className="go-rewards">
             {won && battle.session === 1 && (
               battle.rewardCard
-                ? <div className="reward-pill reward-card">⚡ Drop : <strong>{battle.rewardCard.name}</strong> ({battle.rewardCard.theme})</div>
+                ? <div className="reward-pill reward-card">Drop : <strong>{battle.rewardCard.name}</strong> ({battle.rewardCard.theme})</div>
                 : <p className="reward-miss">Pas de drop cette fois — retente !</p>
             )}
             {battle.creditsAwarded > 0 && (
-              <div className="reward-pill reward-credits">💰 +{battle.creditsAwarded} crédits (consolation 5 défaites)</div>
+              <div className="reward-pill reward-credits">+{battle.creditsAwarded} crédits (consolation 5 défaites)</div>
             )}
             {!won && battle.creditsAwarded === 0 && (
               <p className="go-streak">Série de défaites : {state.lossStreak}/5 — à 5 tu gagnes 10 crédits !</p>
@@ -365,7 +365,7 @@ export default function GamePage({ user, onBack }: Props) {
             <div className="divider-line" />
             {isResult && battle.lastRound && (
               <div className={`round-verdict-badge ${battle.lastRound.playerWon ? 'verdict-win' : 'verdict-lose'}`}>
-                {battle.lastRound.playerWon ? '✓ ROUND GAGNÉ' : '✗ ROUND PERDU'}
+                {battle.lastRound.playerWon ? 'ROUND GAGNÉ' : 'ROUND PERDU'}
               </div>
             )}
             {isReveal && <div className="round-verdict-badge verdict-thinking">Adversaire joue…</div>}

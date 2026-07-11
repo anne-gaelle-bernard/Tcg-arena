@@ -68,7 +68,7 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
             <p className="profile-level">LVL {user.level}</p>
           </div>
           <div className="credits-chip">
-            <span className="credits-icon">💰</span>
+            <span className="credits-label">CR</span>
             <span className="credits-amount">{state.credits}</span>
           </div>
 
@@ -108,7 +108,7 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
 
         <section className="featured-panel">
           <h1>Featured Cards</h1>
-          <p className="featured-subtitle">⚡ Season 1 — Limited Drop</p>
+          <p className="featured-subtitle">Season 1 — Limited Drop</p>
 
           <div className="cards-column">
             {featuredCards.map(card => (
