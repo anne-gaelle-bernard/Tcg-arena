@@ -1,5 +1,6 @@
 import '../style/DashboardPage.css'
 import type { AuthUser } from '../services/authApi'
+import { usePlayerState } from '../store/playerState'
 
 type DashboardPageProps = {
   onLogout: () => void
@@ -23,10 +24,9 @@ type FeaturedCard = {
 
 const menuItems: MenuItem[] = [
   { id: 'play', label: 'Play Now', active: true },
+  { id: 'deck', label: 'Mon Deck' },
   { id: 'collection', label: 'Ma Collection' },
   { id: 'market', label: 'Marketplace' },
-  { id: 'quests', label: 'Quests' },
-  { id: 'leaderboards', label: 'Leaderboards' },
 ]
 
 const featuredCards: FeaturedCard[] = [
@@ -47,6 +47,7 @@ const featuredCards: FeaturedCard[] = [
 ]
 
 export default function DashboardPage({ onLogout, user, onNavigate }: DashboardPageProps) {
+  const { state } = usePlayerState()
   return (
     <div className="dashboard-shell">
       <div className="dashboard-bg-orb dashboard-bg-orb-left" />
@@ -66,12 +67,13 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
             </div>
             <p className="profile-level">LVL {user.level}</p>
           </div>
+          <div className="credits-chip">
+            <span className="credits-icon">💰</span>
+            <span className="credits-amount">{state.credits}</span>
+          </div>
 
-          <button type="button" className="header-icon" aria-label="Notifications">
-            N
-          </button>
-          <button type="button" className="header-icon" aria-label="Settings">
-            S
+          <button type="button" className="header-icon header-icon-profile" onClick={() => onNavigate('profile')}>
+            Profil
           </button>
           <button type="button" className="header-icon" onClick={onLogout}>
             Logout
@@ -106,7 +108,7 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
 
         <section className="featured-panel">
           <h1>Featured Cards</h1>
-          <p className="featured-subtitle">Limited Edition - Season 5 Drop</p>
+          <p className="featured-subtitle">⚡ Season 1 — Limited Drop</p>
 
           <div className="cards-column">
             {featuredCards.map(card => (

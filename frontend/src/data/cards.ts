@@ -13,7 +13,6 @@ export interface CardData {
 }
 
 export const ALL_CARDS: CardData[] = [
-  // ── LEGENDS ───────────────────────────────────────────────
   { id: 'leg_kb',  name: 'KOBE BRYANT',           theme: 'legends',  image: '/png/KB.png',  atk: 99, def: 75, position: 'SG/SF', accentColor: '#f2c94c', score: 99 },
   { id: 'leg_dr',  name: 'DERRICK ROSE',           theme: 'legends',  image: '/png/DR.png',  atk: 99, def: 75, position: 'PG',    accentColor: '#ff0000', score: 99 },
   { id: 'leg_lj',  name: 'LEBRON JAMES',           theme: 'legends',  image: '/png/LJ.png',  atk: 99, def: 90, position: 'PG',    accentColor: '#ff0000', score: 99 },
@@ -31,7 +30,6 @@ export const ALL_CARDS: CardData[] = [
   { id: 'leg_bs',  name: 'BREANNA STEWART',        theme: 'legends',  image: '/png/BS.png',  atk: 92, def: 90, position: 'PF',    accentColor: '#ff0000', score: 99 },
   { id: 'leg_bg',  name: 'BRITTNEY GRINER',        theme: 'legends',  image: '/png/BG.png',  atk: 80, def: 99, position: 'C',     accentColor: '#ff0000', score: 99 },
 
-  // ── TALENTS ───────────────────────────────────────────────
   { id: 'tal_vw',  name: 'VICTOR WEMBANYAMA',      theme: 'talents',  image: '/png/VW.png',  atk: 80, def: 80, position: 'PF/C',  accentColor: '#f2c94c', score: 95 },
   { id: 'tal_jt',  name: 'JASON TATUM',            theme: 'talents',  image: '/png/JT.png',  atk: 80, def: 75, position: 'SF',    accentColor: '#f2c94c', score: 91 },
   { id: 'tal_je',  name: 'JOEL EMBIID',            theme: 'talents',  image: '/png/JE.png',  atk: 78, def: 82, position: 'C',     accentColor: '#f2c94c', score: 92 },
@@ -49,7 +47,6 @@ export const ALL_CARDS: CardData[] = [
   { id: 'tal_si',  name: 'SABRINA IONESCU',        theme: 'talents',  image: '/png/SI.png',  atk: 78, def: 70, position: 'PG/SG', accentColor: '#f2c94c', score: 88 },
   { id: 'tal_gw',  name: 'GABY WILLIAMS',          theme: 'talents',  image: '/png/GWi.png', atk: 79, def: 75, position: 'SG/SF', accentColor: '#f2c94c', score: 88 },
 
-  // ── SPECIALS (boosted Talents, purple theme) ───────────────
   { id: 'spe_vw',  name: 'VICTOR WEMBANYAMA',      theme: 'specials', image: '/png/VW.png',  atk: 92, def: 93, position: 'PF/C',  accentColor: '#7c3aed', score: 97 },
   { id: 'spe_jt',  name: 'JASON TATUM',            theme: 'specials', image: '/png/JT.png',  atk: 90, def: 86, position: 'SF',    accentColor: '#7c3aed', score: 94 },
   { id: 'spe_je',  name: 'JOEL EMBIID',            theme: 'specials', image: '/png/JE.png',  atk: 89, def: 92, position: 'C',     accentColor: '#7c3aed', score: 95 },
@@ -69,3 +66,13 @@ export const ALL_CARDS: CardData[] = [
 ]
 
 export const TALENT_IDS = ALL_CARDS.filter(c => c.theme === 'talents').map(c => c.id)
+
+export function cardCost(card: CardData): number {
+  if (card.theme === 'legends')  return 3
+  if (card.theme === 'specials') return 2
+  return 1
+}
+
+export const DECK_MAX      = 10
+export const DECK_MIN      = 5
+export const DECK_MAX_LEGENDS = 2

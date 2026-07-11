@@ -123,6 +123,25 @@
   font-weight: 700;
 }
 
+.credits-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--tcg-line);
+  border-radius: 10px;
+  background: rgba(35, 22, 10, 0.68);
+  padding: 8px 14px;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+}
+
+.credits-icon { font-size: 18px; }
+
+.credits-amount {
+  color: var(--tcg-accent);
+  font-size: 18px;
+}
+
 .header-icon {
   border: 1px solid var(--tcg-line);
   border-radius: 10px;

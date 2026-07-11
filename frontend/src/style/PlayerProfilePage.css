@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+.pp-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Rajdhani', sans-serif;
+  color: #f4efe9;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,151,58,0.1), transparent 40%),
+    linear-gradient(180deg, #140d08 0%, #1e1008 100%);
+}
+
+.pp-header {
+  flex-shrink: 0;
+  height: 68px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid rgba(255,157,47,0.2);
+  background: rgba(10,6,2,0.5);
+}
+
+.pp-back {
+  background: rgba(255,157,47,0.12);
+  border: 2px solid rgba(255,157,47,0.5);
+  border-radius: 10px;
+  color: #ff9d2f;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 8px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pp-back:hover { background: rgba(255,157,47,0.22); }
+
+.pp-title {
+  flex: 1;
+  margin: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ff9d2f;
+}
+
+.pp-main {
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.pp-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 16px;
+  background: rgba(255,157,47,0.06);
+  border: 1px solid rgba(255,157,47,0.2);
+}
+
+.pp-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9d2f, #c97010);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a0d00;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(255,157,47,0.4);
+}
+
+.pp-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pp-username {
+  margin: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #f4efe9;
+  letter-spacing: 0.05em;
+}
+
+.pp-mail {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(244,239,233,0.5);
+}
+
+.pp-level-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: rgba(255,157,47,0.15);
+  border: 1px solid rgba(255,157,47,0.4);
+  color: #ff9d2f;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  width: fit-content;
+}
+
+.pp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.pp-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.pp-stat-val {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff9d2f;
+}
+
+.pp-stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(244,239,233,0.5);
+  letter-spacing: 0.04em;
+}
+
+.pp-collection-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pp-section-title {
+  margin: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgba(255,157,47,0.7);
+}
+
+.pp-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pp-breakdown-item {
+  display: grid;
+  grid-template-columns: 140px 60px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.pp-bd-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pp-bd-val {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(244,239,233,0.6);
+  text-align: right;
+}
+
+.pp-bd-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.pp-bd-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.pp-bd-legends  .pp-bd-label  { color: #f2c94c; }
+.pp-bd-legends  .pp-bd-fill   { background: #f2c94c; }
+.pp-bd-specials .pp-bd-label  { color: #a78bfa; }
+.pp-bd-specials .pp-bd-fill   { background: #a78bfa; }
+.pp-bd-talents  .pp-bd-label  { color: #60a5fa; }
+.pp-bd-talents  .pp-bd-fill   { background: #60a5fa; }
+
+@media (max-width: 520px) {
+  .pp-stats-grid { grid-template-columns: 1fr; }
+  .pp-card { flex-direction: column; text-align: center; align-items: center; }
+  .pp-level-badge { margin: 6px auto 0; }
+  .pp-breakdown-item { grid-template-columns: 120px 50px 1fr; }
+}

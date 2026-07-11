@@ -3,9 +3,13 @@ import './App.css'
 import RegisterForm from './components/auth/RegisterForm'
 import DashboardPage from './pages/DashboardPage'
 import CollectionPage from './pages/CollectionPage'
+import GamePage from './pages/GamePage'
+import MarketplacePage from './pages/MarketplacePage'
+import DeckBuilderPage from './pages/DeckBuilderPage'
+import PlayerProfilePage from './pages/PlayerProfilePage'
 import type { AuthUser } from './services/authApi'
 
-type Page = 'dashboard' | 'collection'
+type Page = 'dashboard' | 'collection' | 'game' | 'market' | 'deck' | 'profile'
 
 function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null)
@@ -35,6 +39,10 @@ function App() {
 
   function handleNavigate(id: string) {
     if (id === 'collection') setPage('collection')
+    if (id === 'play') setPage('game')
+    if (id === 'market') setPage('market')
+    if (id === 'deck') setPage('deck')
+    if (id === 'profile') setPage('profile')
   }
 
   if (!currentUser) {
@@ -49,6 +57,38 @@ function App() {
     return (
       <div className="app">
         <CollectionPage onBack={() => setPage('dashboard')} />
+      </div>
+    )
+  }
+
+  if (page === 'game') {
+    return (
+      <div className="app">
+        <GamePage user={currentUser} onBack={() => setPage('dashboard')} />
+      </div>
+    )
+  }
+
+  if (page === 'market') {
+    return (
+      <div className="app">
+        <MarketplacePage onBack={() => setPage('dashboard')} />
+      </div>
+    )
+  }
+
+  if (page === 'deck') {
+    return (
+      <div className="app">
+        <DeckBuilderPage onBack={() => setPage('dashboard')} />
+      </div>
+    )
+  }
+
+  if (page === 'profile') {
+    return (
+      <div className="app">
+        <PlayerProfilePage user={currentUser} onBack={() => setPage('dashboard')} />
       </div>
     )
   }

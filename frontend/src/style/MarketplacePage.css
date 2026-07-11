@@ -1,0 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+/* ── SHELL ───────────────────────────────────────────── */
+.mp-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Rajdhani', sans-serif;
+  color: #f4efe9;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,151,58,0.12), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(255,151,58,0.08), transparent 40%),
+    linear-gradient(180deg, #140d08 0%, #1e1008 100%);
+}
+
+/* ── HEADER ──────────────────────────────────────────── */
+.mp-header {
+  height: 72px;
+  padding: 0 48px;
+  border-bottom: 1px solid rgba(255,157,47,0.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(10,6,2,0.5);
+}
+
+.mp-back {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #c8b29a;
+  padding: 6px 14px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.mp-back:hover { border-color: #ff9d2f; color: #ff9d2f; }
+
+.mp-title {
+  flex: 1;
+  margin: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff9d2f;
+}
+
+.mp-credits {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(35,22,10,0.7);
+  border: 1px solid rgba(255,157,47,0.35);
+  border-radius: 12px;
+  padding: 8px 18px;
+}
+.mp-credits-icon  { font-size: 20px; }
+.mp-credits-num   { font-family: 'Chakra Petch', sans-serif; font-size: 22px; font-weight: 700; color: #ff9d2f; }
+.mp-credits-label { font-size: 14px; color: #c8b29a; font-weight: 600; }
+
+/* ── MAIN ────────────────────────────────────────────── */
+.mp-main {
+  flex: 1;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.mp-subtitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #c8b29a;
+  text-align: center;
+}
+
+/* ── PACK GRID ───────────────────────────────────────── */
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  width: 100%;
+  max-width: 960px;
+}
+
+/* ── SINGLE PACK ─────────────────────────────────────── */
+.mp-pack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 4px;
+}
+
+/* ── PACK BODY (the booster bag shape) ──────────────── */
+.pack-body {
+  width: 150px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  filter: drop-shadow(0 8px 24px var(--pack-glow));
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.mp-pack:hover .pack-body { transform: translateY(-10px) scale(1.04); }
+
+/* Crimp (sealed edge) */
+.pack-crimp {
+  height: 22px;
+  background: var(--pack-crimp);
+  position: relative;
+  z-index: 2;
+}
+.pack-crimp-top {
+  border-radius: 8px 8px 0 0;
+  clip-path: polygon(0 0,100% 0,96% 50%,100% 100%,90% 70%,80% 100%,70% 70%,60% 100%,50% 70%,40% 100%,30% 70%,20% 100%,10% 70%,0 100%,4% 50%);
+}
+.pack-crimp-bottom {
+  border-radius: 0 0 8px 8px;
+  clip-path: polygon(4% 50%,0 0,10% 30%,20% 0,30% 30%,40% 0,50% 30%,60% 0,70% 30%,80% 0,90% 30%,100% 0,96% 50%,100% 100%,0 100%);
+}
+
+/* Pack inner body */
+.pack-inner {
+  background: var(--pack-gradient);
+  padding: 20px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bubble texture overlay */
+.pack-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 8%, transparent 8%),
+    radial-gradient(circle at 75% 25%, rgba(255,255,255,0.15) 8%, transparent 8%),
+    radial-gradient(circle at 25% 75%, rgba(255,255,255,0.15) 8%, transparent 8%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.15) 8%, transparent 8%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1)  8%, transparent 8%);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.pack-lightning {
+  font-size: 52px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px var(--pack-color)) drop-shadow(0 0 4px var(--pack-color));
+  position: relative;
+  z-index: 1;
+  color: var(--pack-color);
+}
+
+.pack-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 1;
+}
+
+.pack-sub {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Pack color themes ───────────────────────────────── */
+.pack-blue {
+  --pack-color:    #60a5fa;
+  --pack-crimp:    #1d4ed8;
+  --pack-gradient: linear-gradient(180deg, #1e3a8a 0%, #2563eb 50%, #1e40af 100%);
+  --pack-glow:     rgba(59,130,246,0.4);
+}
+.pack-green {
+  --pack-color:    #4ade80;
+  --pack-crimp:    #15803d;
+  --pack-gradient: linear-gradient(180deg, #14532d 0%, #16a34a 50%, #15803d 100%);
+  --pack-glow:     rgba(34,197,94,0.4);
+}
+.pack-orange {
+  --pack-color:    #fb923c;
+  --pack-crimp:    #c2410c;
+  --pack-gradient: linear-gradient(180deg, #7c2d12 0%, #ea580c 50%, #c2410c 100%);
+  --pack-glow:     rgba(249,115,22,0.4);
+}
+.pack-red {
+  --pack-color:    #f87171;
+  --pack-crimp:    #991b1b;
+  --pack-gradient: linear-gradient(180deg, #450a0a 0%, #dc2626 50%, #991b1b 100%);
+  --pack-glow:     rgba(239,68,68,0.4);
+}
+
+/* ── Pack info ───────────────────────────────────────── */
+.pack-desc {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c8b29a;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 150px;
+}
+
+.pack-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.price-icon  { font-size: 16px; }
+.price-num   { font-family: 'Chakra Petch', sans-serif; font-size: 24px; font-weight: 700; color: #ff9d2f; }
+.price-label { font-size: 13px; color: #c8b29a; font-weight: 600; }
+
+.pack-buy-btn {
+  padding: 9px 24px;
+  border-radius: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #ff9d2f, #c97010);
+  color: #1a0d00;
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: 150px;
+}
+.pack-buy-btn:not(.pack-buy-disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255,157,47,0.4);
+}
+.pack-buy-disabled {
+  background: rgba(60,40,20,0.5);
+  color: rgba(255,255,255,0.25);
+  cursor: not-allowed;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── INFO STRIP ──────────────────────────────────────── */
+.mp-info {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mp-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c8b29a;
+}
+
+/* ── REVEAL OVERLAY ──────────────────────────────────── */
+.reveal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.reveal-box {
+  background: linear-gradient(160deg, #1e1208, #2f1a0d);
+  border: 1px solid rgba(255,157,47,0.3);
+  border-radius: 20px;
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 600px;
+  width: 92%;
+}
+
+.reveal-title {
+  margin: 0;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff9d2f;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.reveal-hint { margin: 0; font-size: 15px; color: #c8b29a; font-weight: 600; }
+
+.reveal-cards {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Revealed card ───────────────────────────────────── */
+.reveal-card {
+  width: 140px;
+  height: 190px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-family: 'Rajdhani', sans-serif;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.reveal-card-back {
+  background: linear-gradient(135deg, #1a0d04, #2d1a08);
+  border-color: rgba(255,157,47,0.3);
+}
+.reveal-card-back:hover { transform: scale(1.05); border-color: #ff9d2f; }
+
+.reveal-card-legends  { background: linear-gradient(160deg,#3a1e0a,#1f0d03); border-color: #f2c94c; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.reveal-card-specials { background: linear-gradient(160deg,#1e0a3a,#0d031f); border-color: #7c3aed; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.reveal-card-talents  { background: linear-gradient(160deg,#0a1e3a,#030d1f); border-color: #3b82f6; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+@keyframes cardReveal {
+  from { transform: rotateY(90deg) scale(0.8); opacity: 0; }
+  to   { transform: rotateY(0) scale(1);       opacity: 1; }
+}
+
+.reveal-card-new { box-shadow: 0 0 20px var(--reveal-glow, rgba(255,157,47,0.6)); }
+.reveal-card-legends.reveal-card-new  { --reveal-glow: rgba(242,201,76,0.6); }
+.reveal-card-specials.reveal-card-new { --reveal-glow: rgba(124,58,237,0.6); }
+.reveal-card-talents.reveal-card-new  { --reveal-glow: rgba(59,130,246,0.6); }
+
+.card-back-q { font-size: 52px; color: rgba(255,157,47,0.3); }
+
+.new-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff9d2f;
+  color: #1a0d00;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.rc2-score { font-family: 'Chakra Petch', sans-serif; font-size: 30px; font-weight: 700; color: #ff9d2f; line-height: 1; }
+.rc2-name  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; line-height: 1.1; color: #f4efe9; }
+.rc2-stats { display: flex; gap: 8px; margin-top: 6px; }
+.rc2-atk   { background: rgba(255,113,0,0.85); color: #fff; font-family: 'Chakra Petch', sans-serif; font-size: 13px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+.rc2-def   { background: rgba(59,130,246,0.85); color: #fff; font-family: 'Chakra Petch', sans-serif; font-size: 13px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+.rc2-theme { font-size: 9px; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+
+.reveal-close {
+  padding: 12px 36px;
+  border-radius: 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #ff9d2f, #c97010);
+  color: #1a0d00;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.reveal-close:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,157,47,0.4); }
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mp-grid   { grid-template-columns: repeat(2,1fr); gap: 24px; }
+  .mp-header { padding: 0 20px; }
+  .mp-main   { padding: 28px 20px; }
+}
+@media (max-width: 520px) {
+  .mp-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .pack-body { width: 128px; }
+  .pack-buy-btn { width: 128px; font-size: 13px; }
+
+  /* ← back button: bigger touch target */
+  .mp-back { min-height: 44px; min-width: 44px; padding: 10px 16px; font-size: 16px; }
+}
