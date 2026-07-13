@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+<linearGradient id="diamondBase" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#ffffff"/><stop offset="25%" stop-color="#dff7ff"/>
+<stop offset="50%" stop-color="#ffffff"/><stop offset="75%" stop-color="#b9dfff"/>
+<stop offset="100%" stop-color="#ffffff"/>
+</linearGradient>
+<linearGradient id="diamondChrome" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#ffffff"/><stop offset=".20" stop-color="#9ec9e8"/>
+<stop offset=".45" stop-color="#ffffff"/><stop offset=".70" stop-color="#7ba6c8"/>
+<stop offset="1" stop-color="#ffffff"/>
+</linearGradient>
+<linearGradient id="rainbow">
+<stop offset="0%" stop-color="#7df9ff" stop-opacity=".25"/>
+<stop offset=".25" stop-color="#ffffff" stop-opacity=".15"/>
+<stop offset=".45" stop-color="#ff8df5" stop-opacity=".25"/>
+<stop offset=".70" stop-color="#ffe66d" stop-opacity=".20"/>
+<stop offset="1" stop-color="#8affc1" stop-opacity=".25"/>
+</linearGradient>
+<linearGradient id="iceBlue">
+<stop offset="0%" stop-color="#e9ffff"/><stop offset="50%" stop-color="#65d8ff"/>
+<stop offset="100%" stop-color="#ffffff"/>
+</linearGradient>
+<pattern id="crystal" width="70" height="70" patternUnits="userSpaceOnUse">
+<path d="M0 70 L70 0" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
+<path d="M20 70 L70 20" stroke="#00d9ff" stroke-opacity=".08" stroke-width="3"/>
+<path d="M0 30 L30 0" stroke="#ff8df5" stroke-opacity=".08" stroke-width="2"/>
+</pattern>
+<filter id="diamondShadow"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#5bbcff" flood-opacity=".35"/></filter>
+<filter id="diamondGlow"><feGaussianBlur stdDeviation="6"/></filter>
+</defs>
+
+<path d="M90 75 Q90 45 135 45 L665 45 Q710 45 710 75 L740 180 Q745 220 730 270 L715 930 Q710 1010 740 1080 L740 1120 Q740 1155 700 1155 L100 1155 Q60 1155 60 1120 L60 1080 Q90 1010 85 930 L70 270 Q55 220 60 180 Z" fill="#8edcff" opacity=".35" filter="url(#diamondShadow)"/>
+<path id="diamondBooster" d="M90 75 Q90 45 135 45 L665 45 Q710 45 710 75 L735 180 Q740 220 725 270 L710 920 Q705 1000 735 1080 L735 1115 Q735 1145 700 1145 L100 1145 Q65 1145 65 1115 L65 1080 Q95 1000 90 920 L75 270 Q60 220 65 180 Z" fill="url(#diamondBase)" stroke="url(#diamondChrome)" stroke-width="8" filter="url(#diamondShadow)"/>
+<path d="M90 75 Q90 45 135 45 L665 45 Q710 45 710 75 L735 180 Q740 220 725 270 L710 920 Q705 1000 735 1080 L735 1115 Q735 1145 700 1145 L100 1145 Q65 1145 65 1115 L65 1080 Q95 1000 90 920 L75 270 Q60 220 65 180 Z" fill="url(#crystal)" opacity=".8"/>
+<path d="M90 75 Q90 45 135 45 L665 45 Q710 45 710 75 L735 180 Q740 220 725 270 L710 920 Q705 1000 735 1080 L735 1115 Q735 1145 700 1145 L100 1145 Q65 1145 65 1115 L65 1080 Q95 1000 90 920 L75 270 Q60 220 65 180 Z" fill="url(#rainbow)" opacity=".65"/>
+
+<g fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="3">
+<path d="M120 120 L400 300 L680 120"/>
+<path d="M100 300 L400 500 L700 300"/>
+<path d="M90 850 L400 700 L710 850"/>
+<path d="M150 1050 L400 900 L650 1050"/>
+</g>
+
+<path d="M170 120 Q250 500 190 1080" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="25"/>
+<path d="M630 120 Q550 500 610 1080" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="20"/>
+<path d="M120 100 Q120 80 150 80 L650 80 Q680 80 680 100 L705 290 L690 900 Q685 990 705 1050 L705 1080 Q705 1100 675 1100 L125 1100 Q95 1100 95 1080 L95 1050 Q115 990 110 900 L95 290 Z" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="3"/>
+
+<!-- SOUDURE HAUTE -->
+<path d="M120 45 Q120 20 155 20 L645 20 Q680 20 680 45 L715 85 Q400 115 85 85 Z" fill="url(#diamondChrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M85 85 Q400 115 715 85 L715 125 Q400 155 85 125 Z" fill="#8edcff" opacity=".35"/>
+<g stroke="#ffffff" stroke-opacity=".45" stroke-width="2">
+<path d="M150 35V85"/><path d="M180 30V90"/><path d="M215 28V94"/><path d="M250 25V98"/>
+<path d="M550 25V98"/><path d="M585 28V94"/><path d="M620 30V90"/><path d="M650 35V85"/>
+</g>
+<g fill="#ffffff">
+<circle cx="200" cy="55" r="2"/><circle cx="320" cy="70" r="2"/>
+<circle cx="500" cy="65" r="2"/><circle cx="600" cy="55" r="2"/>
+</g>
+
+<!-- SOUDURE BASSE -->
+<path d="M85 1115 Q400 1145 715 1115 L680 1175 Q400 1200 120 1175 Z" fill="url(#diamondChrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M120 1120 Q400 1150 680 1120 L660 1150 Q400 1170 140 1150 Z" fill="#65d8ff" opacity=".35"/>
+<g stroke="#ffffff" stroke-opacity=".45" stroke-width="2">
+<path d="M150 1135V1170"/><path d="M185 1140V1175"/><path d="M220 1143V1178"/>
+<path d="M580 1143V1178"/><path d="M615 1140V1175"/><path d="M650 1135V1170"/>
+</g>
+
+<path d="M105 140 Q160 500 120 1030" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="20"/>
+<path d="M695 140 Q640 500 680 1030" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="18"/>
+<path d="M300 120 Q360 500 310 1080" fill="none" stroke="#ff8df5" stroke-opacity=".12" stroke-width="25"/>
+<path d="M500 120 Q440 500 490 1080" fill="none" stroke="#65d8ff" stroke-opacity=".12" stroke-width="25"/>
+
+<!-- LOGO HAUT -->
+<rect x="130" y="125" width="540" height="100" rx="25" fill="#ffffff" fill-opacity=".35" stroke="url(#diamondChrome)" stroke-width="4"/>
+<rect x="150" y="145" width="500" height="65" rx="15" fill="none" stroke="#ffffff" stroke-opacity=".7" stroke-width="2"/>
+<text x="400" y="190" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="62" letter-spacing="6" fill="#6bbfe8" opacity=".5">DIAMOND</text>
+<text x="400" y="182" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="62" letter-spacing="6" fill="url(#iceBlue)" stroke="#ffffff" stroke-width="1">DIAMOND</text>
+
+<!-- ZONE ART -->
+<rect x="100" y="280" width="600" height="500" rx="25" fill="#6bdcff" opacity=".25" filter="url(#diamondGlow)"/>
+<rect x="105" y="275" width="590" height="510" rx="25" fill="#ffffff" fill-opacity=".18" stroke="url(#diamondChrome)" stroke-width="6"/>
+<rect x="130" y="300" width="540" height="460" rx="18" fill="#eafaff" stroke="#ffffff" stroke-width="3"/>
+<rect x="145" y="315" width="510" height="430" fill="url(#rainbow)" opacity=".55"/>
+<g fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="2">
+<path d="M400 320 L220 500 L400 740 L580 500 Z"/>
+<path d="M220 500 L580 500"/>
+<path d="M400 320 L400 740"/>
+</g>
+<path d="M145 650 Q400 730 655 650 L655 745 L145 745 Z" fill="#ffffff" opacity=".18"/>
+
+<path d="M220 920 L580 920" stroke="url(#diamondChrome)" stroke-width="4"/>
+<circle cx="400" cy="920" r="7" fill="#65d8ff" filter="url(#diamondGlow)"/>
+
+<g fill="#ffffff" filter="url(#diamondGlow)">
+<path d="M180 250 L187 270 L207 277 L187 284 L180 304 L173 284 L153 277 L173 270 Z"/>
+<path d="M620 300 L627 320 L647 327 L627 334 L620 354 L613 334 L593 327 L613 320 Z"/>
+<path d="M160 720 L167 740 L187 747 L167 754 L160 774 L153 754 L133 747 L153 740 Z"/>
+<path d="M640 700 L647 720 L667 727 L647 734 L640 754 L633 734 L613 727 L633 720 Z"/>
+</g>
+
+<g stroke="#ffffff" stroke-opacity=".25" stroke-width="3">
+<path d="M400 260 L400 300"/><path d="M200 500 L145 500"/>
+<path d="M600 500 L655 500"/><path d="M400 740 L400 780"/>
+</g>
+
+<path d="M120 240 Q200 600 150 1050" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="12"/>
+<path d="M680 240 Q600 600 650 1050" fill="none" stroke="#65d8ff" stroke-opacity=".25" stroke-width="12"/>
+</svg>

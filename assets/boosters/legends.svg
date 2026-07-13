@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+<linearGradient id="metalBase" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#0c0c0c"/><stop offset="30%" stop-color="#262626"/>
+<stop offset="50%" stop-color="#555555"/><stop offset="70%" stop-color="#1b1b1b"/>
+<stop offset="100%" stop-color="#080808"/>
+</linearGradient>
+<linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#ffffff"/><stop offset="15%" stop-color="#8c8c8c"/>
+<stop offset="35%" stop-color="#f8f8f8"/><stop offset="55%" stop-color="#777777"/>
+<stop offset="75%" stop-color="#ffffff"/><stop offset="100%" stop-color="#9b9b9b"/>
+</linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#fff1a8"/><stop offset="25%" stop-color="#e4b93c"/>
+<stop offset="50%" stop-color="#a87812"/><stop offset="75%" stop-color="#ffd966"/>
+<stop offset="100%" stop-color="#fff3bd"/>
+</linearGradient>
+<linearGradient id="holo" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#00eaff" stop-opacity=".15"/>
+<stop offset=".25" stop-color="#ffffff" stop-opacity=".08"/>
+<stop offset=".50" stop-color="#ff00cc" stop-opacity=".12"/>
+<stop offset=".75" stop-color="#ffe600" stop-opacity=".12"/>
+<stop offset="100%" stop-color="#00ff99" stop-opacity=".08"/>
+</linearGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#000000" flood-opacity=".55"/></filter>
+<filter id="glow">
+<feGaussianBlur stdDeviation="4" result="blur"/>
+<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<pattern id="foilTexture" width="60" height="60" patternUnits="userSpaceOnUse">
+<path d="M0 60 L60 0" stroke="white" stroke-opacity=".06" stroke-width="2"/>
+<path d="M-20 60 L40 0" stroke="#00ffff" stroke-opacity=".04" stroke-width="3"/>
+<path d="M20 60 L80 0" stroke="#ff00ff" stroke-opacity=".04" stroke-width="3"/>
+</pattern>
+</defs>
+
+<path d="M70 95 Q70 55 120 55 L680 55 Q730 55 730 95 L750 180 Q755 210 745 260 L730 970 Q730 1040 750 1090 L750 1110 Q750 1160 700 1160 L100 1160 Q50 1160 50 1110 L50 1090 Q70 1040 70 970 L55 260 Q45 210 50 180 Z" fill="#000000" opacity=".45" filter="url(#shadow)"/>
+<path id="boosterBody" d="M75 90 Q75 55 125 55 L675 55 Q725 55 725 90 L745 180 Q750 215 735 280 L720 920 Q715 1010 740 1080 L740 1105 Q740 1145 700 1145 L100 1145 Q60 1145 60 1105 L60 1080 Q85 1010 80 920 L65 280 Q50 215 55 180 Z" fill="url(#metalBase)" stroke="url(#chrome)" stroke-width="8"/>
+<path d="M75 90 Q75 55 125 55 L675 55 Q725 55 725 90 L745 180 Q750 215 735 280 L720 920 Q715 1010 740 1080 L740 1105 Q740 1145 700 1145 L100 1145 Q60 1145 60 1105 L60 1080 Q85 1010 80 920 L65 280 Q50 215 55 180 Z" fill="url(#holo)" opacity=".8"/>
+<path d="M75 90 Q75 55 125 55 L675 55 Q725 55 725 90 L745 180 Q750 215 735 280 L720 920 Q715 1010 740 1080 L740 1105 Q740 1145 700 1145 L100 1145 Q60 1145 60 1105 L60 1080 Q85 1010 80 920 L65 280 Q50 215 55 180 Z" fill="url(#foilTexture)" opacity=".55"/>
+<path d="M95 110 Q95 85 135 85 L665 85 Q705 85 705 110 L725 270 L705 930 Q700 1030 715 1080 Q715 1115 680 1115 L120 1115 Q85 1115 85 1080 Q100 1030 95 930 L75 270 Z" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="3"/>
+
+<!-- SOUDURE HAUTE -->
+<path d="M95 55 Q95 35 125 35 L675 35 Q705 35 705 55 L725 95 Q400 125 75 95 Z" fill="url(#chrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M75 95 Q400 125 725 95 L725 130 Q400 160 75 130 Z" fill="#111111" opacity=".65"/>
+<g opacity=".55">
+<path d="M120 48 L120 95" stroke="#666" stroke-width="3"/><path d="M150 45 L150 100" stroke="#777" stroke-width="3"/>
+<path d="M180 45 L180 103" stroke="#555" stroke-width="3"/><path d="M210 45 L210 106" stroke="#777" stroke-width="3"/>
+<path d="M590 45 L590 103" stroke="#555" stroke-width="3"/><path d="M620 45 L620 100" stroke="#777" stroke-width="3"/>
+<path d="M650 45 L650 95" stroke="#555" stroke-width="3"/>
+</g>
+
+<!-- SOUDURE BASSE -->
+<path d="M75 1105 Q400 1140 725 1105 L705 1160 Q400 1185 95 1160 Z" fill="url(#chrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M95 1110 Q400 1145 705 1110 L690 1135 Q400 1160 110 1135 Z" fill="#222" opacity=".7"/>
+<g opacity=".55">
+<path d="M130 1120 L130 1160" stroke="#777" stroke-width="3"/><path d="M160 1123 L160 1165" stroke="#555" stroke-width="3"/>
+<path d="M190 1125 L190 1168" stroke="#777" stroke-width="3"/><path d="M610 1125 L610 1168" stroke="#777" stroke-width="3"/>
+<path d="M640 1123 L640 1165" stroke="#555" stroke-width="3"/><path d="M670 1120 L670 1160" stroke="#777" stroke-width="3"/>
+</g>
+
+<path d="M105 170 Q150 450 120 900" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="18"/>
+<path d="M695 170 Q650 450 680 900" fill="none" stroke="#ffffff" stroke-opacity=".10" stroke-width="18"/>
+<path d="M150 150 Q400 180 650 150" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="6"/>
+<path d="M130 1050 Q400 1080 670 1050" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="5"/>
+
+<!-- ZONE ILLUSTRATION -->
+<ellipse cx="400" cy="520" rx="260" ry="340" fill="url(#gold)" opacity=".10" filter="url(#glow)"/>
+<ellipse cx="400" cy="520" rx="220" ry="300" fill="#ffffff" opacity=".04"/>
+<rect x="115" y="190" width="570" height="620" rx="24" fill="#050505" stroke="url(#chrome)" stroke-width="6" filter="url(#shadow)"/>
+<rect x="130" y="205" width="540" height="590" rx="18" fill="none" stroke="url(#gold)" stroke-width="3"/>
+<rect x="145" y="220" width="510" height="560" rx="15" fill="#151515"/>
+<rect x="145" y="220" width="510" height="560" rx="15" fill="url(#holo)" opacity=".7"/>
+<g opacity=".18">
+<path d="M400 500 L170 220" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 500 L630 220" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 500 L160 780" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 500 L640 780" stroke="#ffffff" stroke-width="3"/>
+</g>
+<path d="M150 270 L150 240 Q150 220 170 220" fill="none" stroke="url(#gold)" stroke-width="4"/>
+<path d="M650 270 L650 240 Q650 220 630 220" fill="none" stroke="url(#gold)" stroke-width="4"/>
+<path d="M150 730 L150 760 Q150 780 170 780" fill="none" stroke="url(#gold)" stroke-width="4"/>
+<path d="M650 730 L650 760 Q650 780 630 780" fill="none" stroke="url(#gold)" stroke-width="4"/>
+
+<!-- FOIL -->
+<path d="M75 90 Q75 55 125 55 L675 55 Q725 55 725 90 L745 180 Q750 215 735 280 L720 920 Q715 1010 740 1080 L740 1105 Q740 1145 700 1145 L100 1145 Q60 1145 60 1105 L60 1080 Q85 1010 80 920 L65 280 Q50 215 55 180 Z" fill="url(#holo)" opacity=".55"/>
+<g stroke-width="2" opacity=".35">
+<path d="M100 300 L700 500" stroke="#ffffff"/>
+<path d="M100 500 L700 700" stroke="#00ffff"/>
+<path d="M100 750 L700 950" stroke="#ff00cc"/>
+<path d="M160 150 L640 1050" stroke="#ffe600"/>
+</g>
+<g fill="#ffffff">
+<circle cx="180" cy="300" r="4"/><circle cx="230" cy="410" r="2"/>
+<circle cx="610" cy="280" r="3"/><circle cx="560" cy="370" r="5"/>
+<circle cx="150" cy="620" r="3"/><circle cx="650" cy="700" r="4"/>
+<circle cx="250" cy="880" r="3"/><circle cx="590" cy="900" r="2"/>
+</g>
+<g fill="url(#gold)" filter="url(#glow)">
+<path d="M220 250 L225 265 L240 270 L225 275 L220 290 L215 275 L200 270 L215 265 Z"/>
+<path d="M590 600 L596 620 L615 625 L596 630 L590 650 L584 630 L565 625 L584 620 Z"/>
+<path d="M270 900 L276 918 L294 924 L276 930 L270 948 L264 930 L246 924 L264 918 Z"/>
+</g>
+<path d="M260 120 Q340 500 260 1080" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="35"/>
+<path d="M540 120 Q460 500 540 1080" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="25"/>
+
+<!-- LOGO LEGENDS -->
+<rect x="150" y="120" width="500" height="90" rx="25" fill="#080808" stroke="url(#chrome)" stroke-width="3" opacity=".95"/>
+<rect x="165" y="135" width="470" height="60" rx="18" fill="none" stroke="url(#gold)" stroke-opacity=".45" stroke-width="2"/>
+<text x="400" y="190" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="78" letter-spacing="8" fill="#000000" opacity=".8">LEGENDS</text>
+<text x="400" y="180" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="78" letter-spacing="8" fill="url(#gold)" stroke="#fff2aa" stroke-width="1">LEGENDS</text>
+<text x="400" y="173" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="78" letter-spacing="8" fill="none" stroke="#ffffff" stroke-opacity=".35" stroke-width="1">LEGENDS</text>
+
+<!-- BADGE EDITION -->
+<g filter="url(#shadow)">
+<circle cx="690" cy="165" r="45" fill="#111111" stroke="url(#chrome)" stroke-width="4"/>
+<circle cx="690" cy="165" r="34" fill="none" stroke="url(#gold)" stroke-width="2"/>
+<text x="690" y="158" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="12" fill="#ffffff">SERIES</text>
+<text x="690" y="183" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="25" fill="url(#gold)">01</text>
+</g>
+<path d="M170 175 L180 150 L195 165 L210 145 L225 175 Z" fill="url(#gold)" stroke="#ffffff" stroke-width="1"/>
+<path d="M170 245 L630 245" stroke="url(#gold)" stroke-width="2" opacity=".5"/>
+<circle cx="400" cy="245" r="5" fill="url(#gold)" filter="url(#glow)"/>
+
+<!-- BAS DU BOOSTER -->
+<g filter="url(#shadow)">
+<rect x="120" y="860" width="560" height="120" rx="35" fill="#080808" stroke="url(#chrome)" stroke-width="4"/>
+<rect x="135" y="875" width="530" height="90" rx="28" fill="none" stroke="url(#gold)" stroke-width="2" opacity=".7"/>
+</g>
+<text x="400" y="930" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="48" letter-spacing="3" fill="url(#gold)">Exclusive CARDS</text>
+<path d="M180 1005 L620 1005" stroke="url(#chrome)" stroke-width="2" opacity=".7"/>
+<g filter="url(#glow)">
+<text x="400" y="1055" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" letter-spacing="2" fill="#ffffff">1 LEGENDARY CARD GUARANTEED</text>
+</g>
+<text x="400" y="1095" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" letter-spacing="4" fill="#cfcfcf">TCG Arena</text>
+<text x="400" y="1140" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888888">LEGENDS COLLECTION - PREMIUM EDITION</text>
+
+<!-- PLIS PLASTIQUE -->
+<path d="M105 120 C150 320 155 860 115 1090" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="42" stroke-linecap="round"/>
+<path d="M695 120 C650 340 645 860 685 1090" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="36" stroke-linecap="round"/>
+<path d="M400 110 C450 400 450 800 410 1090" fill="none" stroke="#ffffff" stroke-opacity=".05" stroke-width="18" stroke-linecap="round"/>
+
+<path d="M75 180 Q55 250 65 400 L80 900 Q85 1030 60 1080" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="4"/>
+<path d="M725 180 Q745 250 735 400 L720 900 Q715 1030 740 1080" fill="none" stroke="#ffffff" stroke-opacity=".10" stroke-width="4"/>
+
+<g filter="url(#glow)">
+<path d="M190 350 L196 365 L212 371 L196 377 L190 392 L184 377 L168 371 L184 365 Z" fill="url(#gold)"/>
+<path d="M610 300 L616 315 L632 321 L616 327 L610 342 L604 327 L588 321 L604 315 Z" fill="url(#gold)"/>
+<path d="M620 760 L626 775 L642 781 L626 787 L620 802 L614 787 L598 781 L614 775 Z" fill="url(#gold)"/>
+</g>
+<text x="400" y="182" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="78" letter-spacing="8" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="3">LEGENDS</text>
+<path d="M220 830 L580 830" stroke="url(#gold)" stroke-width="3"/>
+<circle cx="400" cy="830" r="8" fill="url(#gold)" filter="url(#glow)"/>
+<rect x="70" y="90" width="660" height="1030" fill="url(#foilTexture)" opacity=".12"/>
+
+<circle cx="400" cy="1175" r="18" fill="#111111" stroke="url(#chrome)" stroke-width="2"/>
+<text x="400" y="1181" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="12" fill="url(#gold)">L</text>
+<g fill="url(#gold)">
+<circle cx="270" cy="1180" r="2"/><circle cx="290" cy="1180" r="2"/>
+<circle cx="510" cy="1180" r="2"/><circle cx="530" cy="1180" r="2"/>
+</g>
+</svg>

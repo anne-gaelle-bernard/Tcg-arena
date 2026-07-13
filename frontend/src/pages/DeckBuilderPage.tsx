@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ALL_CARDS, cardCost, DECK_MAX, DECK_MIN, DECK_MAX_LEGENDS, type CardData } from '../data/cards'
 import { usePlayerState } from '../store/playerState'
 import CardSvg from '../components/collection/CardSvg'
+import CardZoomModal from '../components/collection/CardZoomModal'
 import '../style/DeckBuilderPage.css'
 
 type Props = { onBack: () => void }
@@ -9,11 +10,17 @@ type Props = { onBack: () => void }
 export default function DeckBuilderPage({ onBack }: Props) {
   const { state, saveDeck } = usePlayerState()
 
-  const owned = ALL_CARDS.filter(c => state.unlockedIds.includes(c.id))
-
   const [deckIds, setDeckIds] = useState<string[]>(
     state.savedDeck.length >= DECK_MIN ? state.savedDeck : []
   )
+  const [search, setSearch] = useState('')
+  const [theme,  setTheme]  = useState<'all' | 'talents' | 'specials' | 'legends'>('all')
+  const [zoomed, setZoomed] = useState<CardData | null>(null)
+
+  const owned = ALL_CARDS
+    .filter(c => state.unlockedIds.includes(c.id))
+    .filter(c => theme === 'all' || c.theme === theme)
+    .filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
 
   const deckCards  = deckIds.map(id => ALL_CARDS.find(c => c.id === id)!).filter(Boolean)
   const legendCount = deckCards.filter(c => c.theme === 'legends').length
@@ -53,27 +60,56 @@ export default function DeckBuilderPage({ onBack }: Props) {
 
       <div className="db-body">
         <section className="db-collection">
+          <div className="db-search-bar">
+            <input
+              className="db-search-input"
+              type="search"
+              placeholder="Rechercher une carte..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            <div className="db-theme-filters">
+              {(['all', 'talents', 'specials', 'legends'] as const).map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`db-theme-btn db-theme-${t} ${theme === t ? 'db-theme-active' : ''}`}
+                  onClick={() => setTheme(t)}
+                >
+                  {t === 'all' ? 'Tous' : t === 'talents' ? 'Talents' : t === 'specials' ? 'Spéciales' : 'Légendes'}
+                </button>
+              ))}
+            </div>
+          </div>
           <p className="db-hint">
             Sélectionnez {DECK_MIN}–{DECK_MAX} cartes · max {DECK_MAX_LEGENDS} légendes
+            {owned.length === 0 && search && <span className="db-no-results"> · Aucun résultat</span>}
           </p>
           <div className="db-grid">
             {owned.map(card => {
               const selected = deckIds.includes(card.id)
               const blocked  = !selected && (isFull || (card.theme === 'legends' && legendCount >= DECK_MAX_LEGENDS))
               return (
-                <button
-                  key={card.id}
-                  type="button"
-                  className={`db-card ${selected ? 'db-card-selected' : ''} ${blocked ? 'db-card-blocked' : ''}`}
-                  onClick={() => toggle(card)}
-                  title={blocked ? (isFull ? 'Deck plein' : 'Max légendes atteint') : undefined}
-                >
-                  <CardSvg card={card} width={110} />
-                  <div className="db-card-cost" style={{ background: costColor[cardCost(card)] }}>
-                    {cardCost(card)}
-                  </div>
-                  {selected && <div className="db-card-check">OK</div>}
-                </button>
+                <div key={card.id} className={`db-card-wrap ${selected ? 'db-card-selected' : ''} ${blocked ? 'db-card-blocked' : ''}`}>
+                  <button
+                    type="button"
+                    className="db-card"
+                    onClick={() => toggle(card)}
+                    title={blocked ? (isFull ? 'Deck plein' : 'Max légendes atteint') : undefined}
+                  >
+                    <CardSvg card={card} width={110} />
+                    <div className="db-card-cost" style={{ background: costColor[cardCost(card)] }}>
+                      {cardCost(card)}
+                    </div>
+                    {selected && <div className="db-card-check">OK</div>}
+                  </button>
+                  <button
+                    type="button"
+                    className="db-card-zoom"
+                    onClick={() => setZoomed(card)}
+                    title="Voir en grand"
+                  >⤢</button>
+                </div>
               )
             })}
           </div>
@@ -123,6 +159,7 @@ export default function DeckBuilderPage({ onBack }: Props) {
           </div>
         </aside>
       </div>
+      {zoomed && <CardZoomModal card={zoomed} onClose={() => setZoomed(null)} />}
     </div>
   )
 }

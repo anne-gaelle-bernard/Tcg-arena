@@ -34,7 +34,6 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
 
       <header className="dashboard-header">
         <div className="brand">
-          <div className="brand-icon">O</div>
           <p className="brand-name">HOOPS TCG</p>
         </div>
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ALL_CARDS, type CardData } from '../data/cards'
 import { usePlayerState } from '../store/playerState'
 import CardSvg from '../components/collection/CardSvg'
+import CardZoomModal from '../components/collection/CardZoomModal'
 import '../style/MarketplacePage.css'
 
 interface PackDef {
@@ -12,6 +13,7 @@ interface PackDef {
   colorClass:  string
   description: string
   cardCount:   number
+  svgSrc:      string
   draw:        (unlocked: string[]) => CardData[]
 }
 
@@ -34,9 +36,10 @@ const PACKS: PackDef[] = [
     name:        'BASIC',
     sub:         'PACK',
     price:       5,
-    colorClass:  'pack-blue',
+    colorClass:  '',
     description: '3 cartes Talents aléatoires',
     cardCount:   3,
+    svgSrc:      '/boosters/bronze.svg',
     draw: (u) => prefer(TALENTS, u, 3),
   },
   {
@@ -44,9 +47,10 @@ const PACKS: PackDef[] = [
     name:        'STANDARD',
     sub:         'PACK',
     price:       10,
-    colorClass:  'pack-green',
+    colorClass:  '',
     description: '2 Talents + 1 Spéciale',
     cardCount:   3,
+    svgSrc:      '/boosters/talents.svg',
     draw: (u) => [...prefer(TALENTS, u, 2), ...prefer(SPECIALS, u, 1)],
   },
   {
@@ -54,9 +58,10 @@ const PACKS: PackDef[] = [
     name:        'PREMIUM',
     sub:         'PACK',
     price:       25,
-    colorClass:  'pack-orange',
+    colorClass:  '',
     description: '1 Talent + 2 Spéciales',
     cardCount:   3,
+    svgSrc:      '/boosters/diamond.svg',
     draw: (u) => [...prefer(TALENTS, u, 1), ...prefer(SPECIALS, u, 2)],
   },
   {
@@ -64,9 +69,10 @@ const PACKS: PackDef[] = [
     name:        'LEGEND',
     sub:         'PACK',
     price:       40,
-    colorClass:  'pack-red',
+    colorClass:  '',
     description: '2 Spéciales + 1 Légende garantie',
     cardCount:   3,
+    svgSrc:      '/boosters/legends.svg',
     draw: (u) => [...prefer(SPECIALS, u, 2), rnd(prefer(LEGENDS, u, LEGENDS.length) as CardData[]) ?? rnd(LEGENDS)],
   },
 ]
@@ -74,36 +80,11 @@ const PACKS: PackDef[] = [
 function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; onBuy: (p: PackDef) => void }) {
   const canAfford = credits >= pack.price
   return (
-    <div className={`mp-pack ${pack.colorClass}`}>
-      <div className="pack-bag">
-        <div className="pack-seal" />
-        <div className="pack-body-art">
-          <div className="pack-hoop-board" />
-          <div className="pack-hoop-rim" />
-          <div className="pack-hoop-net" />
-          <svg className="pack-ball" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="30" cy="30" r="28" fill="#ea580c"/>
-            <ellipse cx="21" cy="19" rx="9" ry="6" fill="rgba(255,210,120,0.2)"/>
-            <circle cx="30" cy="30" r="28" stroke="#1a0500" strokeWidth="1.5"/>
-            <path d="M2 30 Q15 20 30 30 Q45 40 58 30" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            <path d="M2 30 Q15 40 30 30 Q45 20 58 30" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            <path d="M30 2 Q20 15 30 30 Q40 45 30 58" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            <path d="M30 2 Q40 15 30 30 Q20 45 30 58" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-          </svg>
-          <div className="pack-brand">
-            <span className="pack-brand-main">HOOPS</span>
-            <span className="pack-brand-sub">TCG</span>
-          </div>
-          <div className="pack-type-box">
-            <span className="pack-type-name">{pack.name}</span>
-            <span className="pack-type-label">{pack.sub}</span>
-          </div>
-        </div>
-        <div className="pack-strip">
-          <span>{pack.cardCount} cartes · {pack.price} CR</span>
-        </div>
+    <div className="mp-pack">
+      <div className="pack-img-wrap">
+        <img src={pack.svgSrc} alt={pack.name} className="pack-img" />
+        <div className="pack-price-tag">{pack.price} CR</div>
       </div>
-
       <button
         type="button"
         className={`pack-buy-btn ${canAfford ? '' : 'pack-buy-disabled'}`}
@@ -120,28 +101,39 @@ interface RevealCard { card: CardData; isNew: boolean; flipped: boolean }
 
 function CardReveal({ items, onClose }: { items: RevealCard[]; onClose: () => void }) {
   const [cards, setCards] = useState<RevealCard[]>(items)
+  const [zoomed, setZoomed] = useState<RevealCard | null>(null)
   const allFlipped = cards.every(c => c.flipped)
+  const newCount = items.filter(c => c.isNew).length
 
   function flip(i: number) {
     setCards(prev => prev.map((c, idx) => idx === i ? { ...c, flipped: true } : c))
+  }
+
+  function collectionSummary() {
+    if (newCount === 0) return 'Ces cartes étaient déjà dans ta collection.'
+    if (newCount === 1) return '1 nouvelle carte ajoutée à ta collection !'
+    return `${newCount} nouvelles cartes ajoutées à ta collection !`
   }
 
   return (
     <div className="reveal-overlay">
       <div className="reveal-box">
         <h2 className="reveal-title">Booster ouvert !</h2>
-        <p className="reveal-hint">{allFlipped ? 'Toutes les cartes révélées' : 'Cliquez sur les cartes pour les révéler'}</p>
+        <p className="reveal-hint">{allFlipped ? collectionSummary() : 'Clique sur les cartes pour les révéler'}</p>
 
         <div className="reveal-cards">
           {cards.map((item, i) => (
             <div
               key={item.card.id + i}
               className={`reveal-slot ${item.flipped ? `reveal-slot-open reveal-slot-${item.card.theme}${item.isNew ? ' reveal-slot-new' : ''}` : 'reveal-slot-back'}`}
-              onClick={() => !item.flipped && flip(i)}
+              onClick={() => item.flipped ? setZoomed(item) : flip(i)}
             >
               {item.flipped ? (
                 <div className="reveal-card-wrap">
-                  {item.isNew && <span className="new-badge">NOUVEAU</span>}
+                  {item.isNew
+                    ? <span className="new-badge">NOUVEAU</span>
+                    : <span className="owned-badge">DÉJÀ POSSÉDÉE</span>
+                  }
                   <CardSvg card={item.card} width={148} />
                 </div>
               ) : (
@@ -153,10 +145,12 @@ function CardReveal({ items, onClose }: { items: RevealCard[]; onClose: () => vo
 
         {allFlipped && (
           <button type="button" className="reveal-close" onClick={onClose}>
-            Fermer
+            Voir ma collection
           </button>
         )}
       </div>
+
+      {zoomed && <CardZoomModal card={zoomed.card} onClose={() => setZoomed(null)} />}
     </div>
   )
 }

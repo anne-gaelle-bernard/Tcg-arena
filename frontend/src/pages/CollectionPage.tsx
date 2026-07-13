@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import '../style/CollectionPage.css'
-import { ALL_CARDS } from '../data/cards'
+import { ALL_CARDS, type CardData } from '../data/cards'
 import type { CardTheme } from '../data/cards'
 import CardSvg from '../components/collection/CardSvg'
+import CardZoomModal from '../components/collection/CardZoomModal'
 import { usePlayerState } from '../store/playerState'
 
 type Filter = 'all' | CardTheme
@@ -21,6 +22,7 @@ interface Props {
 export default function CollectionPage({ onBack }: Props) {
   const { hasCard, state } = usePlayerState()
   const [filter, setFilter] = useState<Filter>('all')
+  const [zoomed, setZoomed] = useState<CardData | null>(null)
 
   const displayed = filter === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.theme === filter)
   const owned = state.unlockedIds.length
@@ -49,7 +51,12 @@ export default function CollectionPage({ onBack }: Props) {
         {displayed.map(card => {
           const owned = hasCard(card.id)
           return (
-            <div key={card.id} className={`col-card-wrap${owned ? '' : ' col-card-locked'}`}>
+            <div
+              key={card.id}
+              className={`col-card-wrap${owned ? '' : ' col-card-locked'}`}
+              onClick={() => owned && setZoomed(card)}
+              style={owned ? { cursor: 'pointer' } : undefined}
+            >
               <CardSvg card={card} width={190} />
               {!owned && (
                 <div className="col-lock-overlay">
@@ -62,6 +69,8 @@ export default function CollectionPage({ onBack }: Props) {
           )
         })}
       </div>
+
+      {zoomed && <CardZoomModal card={zoomed} onClose={() => setZoomed(null)} />}
     </div>
   )
 }

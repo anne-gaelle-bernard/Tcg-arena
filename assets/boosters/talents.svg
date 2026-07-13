@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+<defs>
+<linearGradient id="blackMetal" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#050505"/><stop offset="40%" stop-color="#1a1a1a"/>
+<stop offset="60%" stop-color="#303030"/><stop offset="100%" stop-color="#050505"/>
+</linearGradient>
+<linearGradient id="whiteChrome" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#ffffff"/><stop offset="30%" stop-color="#777777"/>
+<stop offset="50%" stop-color="#ffffff"/><stop offset="80%" stop-color="#aaaaaa"/>
+<stop offset="100%" stop-color="#ffffff"/>
+</linearGradient>
+<linearGradient id="premiumGold">
+<stop offset="0%" stop-color="#fff2a6"/><stop offset="50%" stop-color="#c99722"/>
+<stop offset="100%" stop-color="#fff2a6"/>
+</linearGradient>
+<pattern id="carbon" width="35" height="35" patternUnits="userSpaceOnUse">
+<path d="M0 35L35 0" stroke="#ffffff" stroke-opacity=".035" stroke-width="3"/>
+<path d="M-10 35L25 0" stroke="#ffffff" stroke-opacity=".02" stroke-width="2"/>
+</pattern>
+<filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#000" flood-opacity=".6"/></filter>
+<filter id="glow"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+
+<path d="M90 70 Q90 45 130 45 L670 45 Q710 45 710 70 L735 170 Q740 210 725 260 L715 940 Q710 1010 735 1080 L735 1120 Q735 1150 700 1150 L100 1150 Q65 1150 65 1120 L65 1080 Q90 1010 85 940 L75 260 Q60 210 65 170 Z" fill="#000000" opacity=".6" filter="url(#shadow)"/>
+<path id="boosterShape" d="M90 75 Q90 45 130 45 L670 45 Q710 45 710 75 L730 180 Q735 215 720 270 L705 920 Q700 1000 725 1070 L725 1110 Q725 1135 690 1135 L110 1135 Q75 1135 75 1110 L75 1070 Q100 1000 95 920 L80 270 Q65 215 70 180 Z" fill="url(#blackMetal)" stroke="url(#whiteChrome)" stroke-width="8"/>
+<path d="M90 75 Q90 45 130 45 L670 45 Q710 45 710 75 L730 180 Q735 215 720 270 L705 920 Q700 1000 725 1070 L725 1110 Q725 1135 690 1135 L110 1135 Q75 1135 75 1110 L75 1070 Q100 1000 95 920 L80 270 Q65 215 70 180 Z" fill="url(#carbon)" opacity=".9"/>
+<path d="M250 90 Q330 500 260 1080" stroke="#ffffff" stroke-opacity=".06" stroke-width="35" fill="none"/>
+<path d="M550 90 Q470 500 540 1080" stroke="#ffffff" stroke-opacity=".04" stroke-width="25" fill="none"/>
+<path d="M110 100 Q110 75 145 75 L655 75 Q690 75 690 100 L710 280 L695 900 Q690 990 710 1050 L710 1080 Q710 1100 680 1100 L120 1100 Q90 1100 90 1080 L90 1050 Q110 990 105 900 L90 280 Z" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="3"/>
+
+<!-- SOUDURE HAUTE -->
+<path d="M120 45 Q120 25 150 25 L650 25 Q680 25 680 45 L710 85 Q400 110 90 85 Z" fill="url(#whiteChrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M90 85 Q400 110 710 85 L710 120 Q400 145 90 120 Z" fill="#000000" opacity=".45"/>
+<g opacity=".45">
+<path d="M150 35V85" stroke="#555" stroke-width="3"/><path d="M180 30V90" stroke="#888" stroke-width="3"/>
+<path d="M210 30V92" stroke="#555" stroke-width="3"/><path d="M240 30V95" stroke="#888" stroke-width="3"/>
+<path d="M560 30V95" stroke="#888" stroke-width="3"/><path d="M590 30V92" stroke="#555" stroke-width="3"/>
+<path d="M620 30V90" stroke="#888" stroke-width="3"/><path d="M650 35V85" stroke="#555" stroke-width="3"/>
+</g>
+
+<!-- SOUDURE BASSE -->
+<path d="M90 1110 Q400 1140 710 1110 L680 1170 Q400 1190 120 1170 Z" fill="url(#whiteChrome)" stroke="#ffffff" stroke-width="3"/>
+<path d="M120 1115 Q400 1145 680 1115 L665 1140 Q400 1165 135 1140 Z" fill="#000000" opacity=".5"/>
+<g opacity=".45">
+<path d="M150 1130V1165" stroke="#666" stroke-width="3"/><path d="M180 1135V1170" stroke="#888" stroke-width="3"/>
+<path d="M210 1138V1172" stroke="#555" stroke-width="3"/><path d="M590 1138V1172" stroke="#555" stroke-width="3"/>
+<path d="M620 1135V1170" stroke="#888" stroke-width="3"/><path d="M650 1130V1165" stroke="#666" stroke-width="3"/>
+</g>
+
+<path d="M105 150 Q145 500 120 1000" fill="none" stroke="#ffffff" stroke-opacity=".12" stroke-width="18"/>
+<path d="M695 150 Q655 500 680 1000" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="18"/>
+<path d="M130 135 Q400 160 670 135" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="5"/>
+<path d="M130 1055 Q400 1080 670 1055" fill="none" stroke="#ffffff" stroke-opacity=".06" stroke-width="5"/>
+
+<!-- LOGO HAUT -->
+<rect x="130" y="120" width="540" height="95" rx="20" fill="#050505" stroke="url(#whiteChrome)" stroke-width="3"/>
+<rect x="145" y="135" width="510" height="65" rx="15" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="2"/>
+<text x="400" y="185" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="65" letter-spacing="8" fill="#ffffff">Talents</text>
+
+<!-- ZONE ART -->
+<rect x="105" y="270" width="590" height="680" rx="18" fill="#000000" stroke="url(#whiteChrome)" stroke-width="5" filter="url(#shadow)"/>
+<rect x="125" y="290" width="550" height="620" rx="12" fill="#111111" stroke="#ffffff" stroke-opacity=".4" stroke-width="2"/>
+<rect x="135" y="300" width="530" height="600" fill="#0a0a0a"/>
+<g opacity=".15">
+<path d="M400 530 L150 300" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 530 L650 300" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 530 L150 760" stroke="#ffffff" stroke-width="3"/>
+<path d="M400 530 L650 760" stroke="#ffffff" stroke-width="3"/>
+</g>
+<path d="M135 650 Q400 730 665 650 L665 760 L135 760 Z" fill="#000000" opacity=".35"/>
+
+<path d="M220 905 L580 905" stroke="url(#premiumGold)" stroke-width="3"/>
+<circle cx="400" cy="905" r="5" fill="url(#premiumGold)"/>
+
+<!-- BADGE SERIE -->
+<g filter="url(#shadow)">
+<circle cx="650" cy="170" r="42" fill="#050505" stroke="url(#whiteChrome)" stroke-width="3"/>
+<circle cx="650" cy="170" r="32" fill="none" stroke="url(#premiumGold)" stroke-width="2"/>
+<text x="650" y="165" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="12" fill="#ffffff">SERIES</text>
+<text x="650" y="190" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="22" fill="url(#premiumGold)">01</text>
+</g>
+
+<text x="400" y="1035" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="24" fill="url(#premiumGold)">1 LEGEND GUARANTEED</text>
+<path d="M170 1095 L630 1095" stroke="#ffffff" stroke-opacity=".25" stroke-width="2"/>
+<text x="400" y="1100" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="5" fill="#888888">TCG Arena</text>
+
+<g fill="#ffffff" opacity=".45">
+<circle cx="170" cy="320" r="3"/><circle cx="220" cy="400" r="2"/>
+<circle cx="600" cy="350" r="3"/><circle cx="560" cy="460" r="2"/>
+<circle cx="190" cy="700" r="2"/><circle cx="620" cy="720" r="3"/>
+</g>
+
+<g fill="url(#whiteChrome)">
+<path d="M160 250 L165 265 L180 270 L165 275 L160 290 L155 275 L140 270 L155 265 Z"/>
+<path d="M640 520 L645 535 L660 540 L645 545 L640 560 L635 545 L620 540 L635 535 Z"/>
+</g>
+
+<path d="M120 230 Q400 250 680 230" stroke="#ffffff" stroke-opacity=".08" stroke-width="4" fill="none"/>
+<path d="M120 920 Q400 940 680 920" stroke="#ffffff" stroke-opacity=".06" stroke-width="4" fill="none"/>
+</svg>
