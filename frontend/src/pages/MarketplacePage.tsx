@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ALL_CARDS, type CardData } from '../data/cards'
 import { usePlayerState } from '../store/playerState'
+import CardSvg from '../components/collection/CardSvg'
 import '../style/MarketplacePage.css'
 
 interface PackDef {
@@ -74,13 +75,17 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
   const canAfford = credits >= pack.price
   return (
     <div className={`mp-pack ${pack.colorClass}`}>
-      <div className="pack-body">
-        <div className="pack-crimp pack-crimp-top" />
-        <div className="pack-inner">
+      <div className="pack-visual">
+        <div className="pack-seam" />
+        <div className="pack-art">
+          <div className="pack-fan-card pack-fan-1" />
+          <div className="pack-fan-card pack-fan-2" />
+          <div className="pack-fan-card pack-fan-3" />
+        </div>
+        <div className="pack-label">
           <div className="pack-name">{pack.name}</div>
           <div className="pack-sub">{pack.sub}</div>
         </div>
-        <div className="pack-crimp pack-crimp-bottom" />
       </div>
 
       <p className="pack-desc">{pack.description}</p>
@@ -119,27 +124,20 @@ function CardReveal({ items, onClose }: { items: RevealCard[]; onClose: () => vo
 
         <div className="reveal-cards">
           {cards.map((item, i) => (
-            <button
-              type="button"
+            <div
               key={item.card.id + i}
-              className={`reveal-card ${item.flipped ? `reveal-card-${item.card.theme}` : 'reveal-card-back'} ${item.isNew ? 'reveal-card-new' : ''}`}
+              className={`reveal-slot ${item.flipped ? `reveal-slot-open reveal-slot-${item.card.theme}${item.isNew ? ' reveal-slot-new' : ''}` : 'reveal-slot-back'}`}
               onClick={() => !item.flipped && flip(i)}
             >
               {item.flipped ? (
-                <>
+                <div className="reveal-card-wrap">
                   {item.isNew && <span className="new-badge">NOUVEAU</span>}
-                  <div className="rc2-score">{item.card.score}</div>
-                  <div className="rc2-name">{item.card.name}</div>
-                  <div className="rc2-stats">
-                    <span className="rc2-atk">{item.card.atk}</span>
-                    <span className="rc2-def">{item.card.def}</span>
-                  </div>
-                  <div className="rc2-theme">{item.card.theme.toUpperCase()}</div>
-                </>
+                  <CardSvg card={item.card} width={148} />
+                </div>
               ) : (
                 <span className="card-back-q">?</span>
               )}
-            </button>
+            </div>
           ))}
         </div>
 

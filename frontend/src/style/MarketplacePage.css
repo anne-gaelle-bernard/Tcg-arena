@@ -99,94 +99,113 @@
   padding-bottom: 4px;
 }
 
-/* ── PACK BODY (the booster bag shape) ──────────────── */
-.pack-body {
-  width: 150px;
+/* ── PACK VISUAL (booster pack shape) ───────────────── */
+.pack-visual {
+  width: 140px;
+  height: 196px;
+  border-radius: 8px;
   position: relative;
   display: flex;
   flex-direction: column;
-  cursor: default;
+  overflow: hidden;
+  background: var(--pack-gradient);
   filter: drop-shadow(0 8px 24px var(--pack-glow));
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
 }
-.mp-pack:hover .pack-body { transform: translateY(-10px) scale(1.04); }
+.mp-pack:hover .pack-visual { transform: translateY(-10px) scale(1.04); }
 
-/* Crimp (sealed edge) */
-.pack-crimp {
+/* Foil shimmer overlay */
+.pack-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(255,255,255,0.09) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Top seam */
+.pack-seam {
   height: 22px;
+  flex-shrink: 0;
   background: var(--pack-crimp);
   position: relative;
   z-index: 2;
 }
-.pack-crimp-top {
-  border-radius: 8px 8px 0 0;
-  clip-path: polygon(0 0,100% 0,96% 50%,100% 100%,90% 70%,80% 100%,70% 70%,60% 100%,50% 70%,40% 100%,30% 70%,20% 100%,10% 70%,0 100%,4% 50%);
-}
-.pack-crimp-bottom {
-  border-radius: 0 0 8px 8px;
-  clip-path: polygon(4% 50%,0 0,10% 30%,20% 0,30% 30%,40% 0,50% 30%,60% 0,70% 30%,80% 0,90% 30%,100% 0,96% 50%,100% 100%,0 100%);
+/* Tear notch */
+.pack-seam::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  bottom: -6px;
+  width: 14px;
+  height: 8px;
+  background: var(--pack-crimp);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  z-index: 3;
 }
 
-/* Pack inner body */
-.pack-inner {
-  background: var(--pack-gradient);
-  padding: 20px 12px 16px;
+/* Card silhouettes art area */
+.pack-art {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pack-fan-card {
+  position: absolute;
+  width: 56px;
+  height: 78px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+}
+.pack-fan-1 { transform: rotate(-14deg) translate(-22px, 6px); }
+.pack-fan-2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; }
+.pack-fan-3 {
+  transform: rotate(10deg) translate(18px, -5px);
+  z-index: 2;
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* Bottom label strip */
+.pack-label {
+  height: 46px;
+  flex-shrink: 0;
+  background: var(--pack-crimp);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Bubble texture overlay */
-.pack-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 8%, transparent 8%),
-    radial-gradient(circle at 75% 25%, rgba(255,255,255,0.15) 8%, transparent 8%),
-    radial-gradient(circle at 25% 75%, rgba(255,255,255,0.15) 8%, transparent 8%),
-    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.15) 8%, transparent 8%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1)  8%, transparent 8%);
-  background-size: 28px 28px;
-  pointer-events: none;
-}
-
-.pack-lightning {
-  font-size: 52px;
-  line-height: 1;
-  filter: drop-shadow(0 0 12px var(--pack-color)) drop-shadow(0 0 4px var(--pack-color));
-  position: relative;
-  z-index: 1;
-  color: var(--pack-color);
+  justify-content: center;
+  gap: 2px;
+  z-index: 2;
 }
 
 .pack-name {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #fff;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  position: relative;
-  z-index: 1;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
 .pack-sub {
-  font-family: 'Chakra Petch', sans-serif;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 4px;
-  position: relative;
-  z-index: 1;
+  color: rgba(255,255,255,0.55);
 }
 
 /* ── Pack color themes ───────────────────────────────── */
@@ -321,50 +340,51 @@
   flex-wrap: wrap;
 }
 
-/* ── Revealed card ───────────────────────────────────── */
-.reveal-card {
-  width: 140px;
-  height: 190px;
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 14px 10px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  font-family: 'Rajdhani', sans-serif;
+/* ── Reveal slots ────────────────────────────────────── */
+.reveal-slot {
   position: relative;
+  border-radius: 12px;
+  cursor: pointer;
   transition: transform 0.2s;
 }
 
-.reveal-card-back {
+.reveal-slot-back {
+  width: 148px;
+  height: 207px;
   background: linear-gradient(135deg, #1a0d04, #2d1a08);
-  border-color: rgba(255,157,47,0.3);
+  border: 2px solid rgba(255,157,47,0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.reveal-card-back:hover { transform: scale(1.05); border-color: #ff9d2f; }
+.reveal-slot-back:hover { transform: scale(1.05); border-color: #ff9d2f; }
 
-.reveal-card-legends  { background: linear-gradient(160deg,#3a1e0a,#1f0d03); border-color: #f2c94c; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
-.reveal-card-specials { background: linear-gradient(160deg,#1e0a3a,#0d031f); border-color: #7c3aed; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
-.reveal-card-talents  { background: linear-gradient(160deg,#0a1e3a,#030d1f); border-color: #3b82f6; animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.reveal-slot-open { animation: cardReveal 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+.reveal-slot-legends  { filter: drop-shadow(0 0 10px rgba(242,201,76,0.5)); }
+.reveal-slot-specials { filter: drop-shadow(0 0 10px rgba(124,58,237,0.5)); }
+.reveal-slot-talents  { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
+.reveal-slot-new.reveal-slot-legends  { filter: drop-shadow(0 0 20px rgba(242,201,76,0.8)); }
+.reveal-slot-new.reveal-slot-specials { filter: drop-shadow(0 0 20px rgba(124,58,237,0.8)); }
+.reveal-slot-new.reveal-slot-talents  { filter: drop-shadow(0 0 20px rgba(59,130,246,0.8)); }
 
 @keyframes cardReveal {
   from { transform: rotateY(90deg) scale(0.8); opacity: 0; }
   to   { transform: rotateY(0) scale(1);       opacity: 1; }
 }
 
-.reveal-card-new { box-shadow: 0 0 20px var(--reveal-glow, rgba(255,157,47,0.6)); }
-.reveal-card-legends.reveal-card-new  { --reveal-glow: rgba(242,201,76,0.6); }
-.reveal-card-specials.reveal-card-new { --reveal-glow: rgba(124,58,237,0.6); }
-.reveal-card-talents.reveal-card-new  { --reveal-glow: rgba(59,130,246,0.6); }
+.reveal-card-wrap {
+  position: relative;
+  display: inline-block;
+}
 
 .card-back-q { font-size: 52px; color: rgba(255,157,47,0.3); }
 
 .new-badge {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 4px;
   background: #ff9d2f;
   color: #1a0d00;
   font-family: 'Chakra Petch', sans-serif;
@@ -373,14 +393,8 @@
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 0.05em;
+  z-index: 5;
 }
-
-.rc2-score { font-family: 'Chakra Petch', sans-serif; font-size: 30px; font-weight: 700; color: #ff9d2f; line-height: 1; }
-.rc2-name  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; line-height: 1.1; color: #f4efe9; }
-.rc2-stats { display: flex; gap: 8px; margin-top: 6px; }
-.rc2-atk   { background: rgba(255,113,0,0.85); color: #fff; font-family: 'Chakra Petch', sans-serif; font-size: 13px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
-.rc2-def   { background: rgba(59,130,246,0.85); color: #fff; font-family: 'Chakra Petch', sans-serif; font-size: 13px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
-.rc2-theme { font-size: 9px; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
 
 .reveal-close {
   padding: 12px 36px;
