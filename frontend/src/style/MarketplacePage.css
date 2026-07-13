@@ -102,154 +102,183 @@
 .pack-bag {
   width: 148px;
   height: 210px;
-  border-radius: 6px;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 10px 32px var(--pack-glow);
+  background: #060606;
+  box-shadow: 0 10px 32px var(--pack-glow), 0 0 0 1px rgba(255,255,255,0.06);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 .mp-pack:hover .pack-bag {
-  transform: translateY(-10px) scale(1.04);
-  box-shadow: 0 22px 44px var(--pack-glow);
+  transform: translateY(-12px) rotate(-1deg) scale(1.05);
+  box-shadow: 0 24px 50px var(--pack-glow), 0 0 0 1px rgba(255,255,255,0.1);
 }
-/* Single clean foil reflection */
 .pack-bag::after {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    140deg,
-    rgba(255,255,255,0.18) 0%,
-    transparent 40%,
-    transparent 60%,
-    rgba(255,255,255,0.07) 100%
+    135deg,
+    rgba(255,255,255,0.14) 0%,
+    transparent 38%,
+    transparent 65%,
+    rgba(255,255,255,0.05) 100%
   );
   pointer-events: none;
   z-index: 10;
 }
 
-/* ── HEADER ──────────────────────────────────────────── */
-.pack-header {
-  height: 28px;
+/* ── CRIMPED SEAL TOP ────────────────────────────────── */
+.pack-seal {
+  height: 14px;
   flex-shrink: 0;
-  background: var(--pack-crimp);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 10px;
-}
-.pack-game-label {
-  font-family: 'Chakra Petch', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #fff;
-}
-.pack-rating {
-  font-family: 'Chakra Petch', sans-serif;
-  font-size: 8px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.7);
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: 2px;
-  padding: 0 3px;
-}
-
-/* ── ART ZONE ────────────────────────────────────────── */
-.pack-art {
-  flex: 1;
-  background: var(--pack-gradient);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Hardwood court floor lines */
-.pack-art::before {
-  content: '';
-  position: absolute;
-  inset: 0;
   background: repeating-linear-gradient(
     90deg,
-    transparent 0px,
-    transparent 11px,
-    rgba(0,0,0,0.07) 11px,
-    rgba(0,0,0,0.07) 12px
+    #1c1c1c 0px, #2a2a2a 3px, #101010 3px, #101010 6px
   );
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  z-index: 3;
 }
 
-/* Free-throw arc */
-.pack-court-arc {
+/* ── MAIN ART BODY ───────────────────────────────────── */
+.pack-body-art {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--pack-art-bg);
+}
+
+/* Backboard */
+.pack-hoop-board {
   position: absolute;
-  bottom: 10%;
+  width: 48px;
+  height: 30px;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  top: 8%;
+  right: 10%;
+}
+.pack-hoop-board::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 96px;
-  height: 44px;
-  border: 1.5px solid rgba(255,255,255,0.15);
+  width: 18px;
+  height: 12px;
+  border: 1px solid rgba(255,255,255,0.28);
   border-bottom: none;
-  border-radius: 50px 50px 0 0;
+}
+
+/* Hoop rim */
+.pack-hoop-rim {
+  position: absolute;
+  width: 50px;
+  height: 9px;
+  border: 3px solid #f97316;
+  border-radius: 50%;
+  top: calc(8% + 28px);
+  right: 9%;
+  box-shadow: 0 0 10px rgba(249,115,22,0.8), inset 0 0 4px rgba(249,115,22,0.3);
+}
+
+/* Net */
+.pack-hoop-net {
+  position: absolute;
+  top: calc(8% + 35px);
+  right: calc(9% + 3px);
+  width: 44px;
+  height: 34px;
+  border-left: 1.5px solid rgba(255,255,255,0.28);
+  border-right: 1.5px solid rgba(255,255,255,0.28);
+  border-bottom: 1.5px solid rgba(255,255,255,0.28);
+  border-radius: 0 0 6px 6px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 7px, rgba(255,255,255,0.13) 7px, rgba(255,255,255,0.13) 8px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 9px, rgba(255,255,255,0.13) 9px, rgba(255,255,255,0.13) 10px);
 }
 
 /* Basketball SVG */
 .pack-ball {
-  width: 62px;
-  height: 62px;
-  position: relative;
-  z-index: 2;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
-}
-
-/* Orange glow under the ball */
-.pack-ball-glow {
   position: absolute;
-  width: 80px;
-  height: 20px;
-  background: radial-gradient(ellipse, rgba(234,88,12,0.5) 0%, transparent 70%);
-  bottom: 24%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
+  width: 66px;
+  height: 66px;
+  top: 36%;
+  right: 7%;
+  z-index: 2;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.9)) drop-shadow(0 0 12px rgba(234,88,12,0.45));
 }
 
-/* ── NAME BAND ───────────────────────────────────────── */
-.pack-namebar {
-  height: 44px;
-  flex-shrink: 0;
-  background: var(--pack-crimp);
+/* Left brand */
+.pack-brand {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+}
+.pack-brand-main {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 0.95;
+  color: #f97316;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 16px rgba(249,115,22,0.8), 2px 2px 0 #000, -1px -1px 0 #000;
+}
+.pack-brand-sub {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pack-color);
+  letter-spacing: 0.18em;
+  text-shadow: 0 0 10px var(--pack-color), 1px 1px 0 #000;
+}
+
+/* Pack type info box (top-left) */
+.pack-type-box {
+  position: absolute;
+  top: 9%;
+  left: 7px;
+  background: rgba(0,0,0,0.65);
+  border: 1.5px solid var(--pack-color);
+  border-radius: 3px;
+  padding: 3px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
+  z-index: 3;
 }
-.pack-namebar-title {
+.pack-type-name {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 14px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 0 10px var(--pack-color), 0 1px 3px rgba(0,0,0,0.8);
+  color: var(--pack-color);
+  text-shadow: 0 0 6px var(--pack-color);
+  line-height: 1;
 }
-.pack-namebar-sub {
-  font-size: 8px;
+.pack-type-label {
+  font-size: 7px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.38);
+  line-height: 1;
+  margin-top: 1px;
 }
 
-/* ── BOTTOM STRIP ────────────────────────────────────── */
+/* ── BOTTOM COLORED STRIP ────────────────────────────── */
 .pack-strip {
-  height: 18px;
+  height: 22px;
   flex-shrink: 0;
-  background: rgba(0,0,0,0.5);
+  background: var(--pack-strip);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -257,33 +286,35 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  z-index: 3;
 }
 
 /* ── Pack color themes ───────────────────────────────── */
 .pack-blue {
-  --pack-color:    #93c5fd;
-  --pack-crimp:    #1e3a8a;
-  --pack-gradient: linear-gradient(170deg, #0c1a42 0%, #1e3a6e 55%, #0f1e40 100%);
-  --pack-glow:     rgba(59,130,246,0.45);
+  --pack-color:   #60a5fa;
+  --pack-art-bg:  linear-gradient(155deg, #03060e 0%, #070f22 100%);
+  --pack-strip:   #1d4ed8;
+  --pack-glow:    rgba(59,130,246,0.5);
 }
 .pack-green {
-  --pack-color:    #6ee7b7;
-  --pack-crimp:    #065f46;
-  --pack-gradient: linear-gradient(170deg, #052e16 0%, #065f46 55%, #052e16 100%);
-  --pack-glow:     rgba(16,185,129,0.45);
+  --pack-color:   #34d399;
+  --pack-art-bg:  linear-gradient(155deg, #010a05 0%, #031508 100%);
+  --pack-strip:   #047857;
+  --pack-glow:    rgba(16,185,129,0.5);
 }
 .pack-orange {
-  --pack-color:    #fdba74;
-  --pack-crimp:    #92400e;
-  --pack-gradient: linear-gradient(170deg, #431407 0%, #78350f 55%, #3c1308 100%);
-  --pack-glow:     rgba(234,88,12,0.55);
+  --pack-color:   #fb923c;
+  --pack-art-bg:  linear-gradient(155deg, #0c0400 0%, #1a0800 100%);
+  --pack-strip:   #ea580c;
+  --pack-glow:    rgba(234,88,12,0.6);
 }
 .pack-red {
-  --pack-color:    #fbbf24;
-  --pack-crimp:    #78350f;
-  --pack-gradient: linear-gradient(170deg, #1c0a00 0%, #451a03 55%, #1c0a00 100%);
-  --pack-glow:     rgba(245,158,11,0.5);
+  --pack-color:   #fbbf24;
+  --pack-art-bg:  linear-gradient(155deg, #080400 0%, #120800 100%);
+  --pack-strip:   #92400e;
+  --pack-glow:    rgba(245,158,11,0.55);
 }
 
 /* ── Pack info ───────────────────────────────────────── */
