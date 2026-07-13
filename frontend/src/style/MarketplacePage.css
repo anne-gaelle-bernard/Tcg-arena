@@ -168,31 +168,53 @@
   align-items: center;
   justify-content: center;
 }
-.pack-spotlight {
+
+/* Hardwood court floor lines */
+.pack-art::before {
+  content: '';
   position: absolute;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--pack-color) 0%, transparent 70%);
-  opacity: 0.35;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 11px,
+    rgba(0,0,0,0.07) 11px,
+    rgba(0,0,0,0.07) 12px
+  );
 }
-/* Cards fan — positioned absolutely */
-.pack-c {
+
+/* Free-throw arc */
+.pack-court-arc {
   position: absolute;
-  width: 56px;
-  height: 78px;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 44px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-bottom: none;
+  border-radius: 50px 50px 0 0;
 }
-.pack-c1 { transform: rotate(-14deg) translate(-22px, 8px); }
-.pack-c2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; background: rgba(255,255,255,0.11); }
-.pack-c3 {
-  transform: rotate(10deg) translate(20px, -6px);
+
+/* Basketball SVG */
+.pack-ball {
+  width: 62px;
+  height: 62px;
+  position: relative;
   z-index: 2;
-  background: rgba(255,255,255,0.15);
-  border-color: rgba(255,255,255,0.32);
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+}
+
+/* Orange glow under the ball */
+.pack-ball-glow {
+  position: absolute;
+  width: 80px;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(234,88,12,0.5) 0%, transparent 70%);
+  bottom: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
 /* ── NAME BAND ───────────────────────────────────────── */
@@ -240,28 +262,28 @@
 
 /* ── Pack color themes ───────────────────────────────── */
 .pack-blue {
-  --pack-color:    #60a5fa;
-  --pack-crimp:    #1d4ed8;
-  --pack-gradient: linear-gradient(180deg, #1e3a8a 0%, #2563eb 50%, #1e40af 100%);
-  --pack-glow:     rgba(59,130,246,0.4);
+  --pack-color:    #93c5fd;
+  --pack-crimp:    #1e3a8a;
+  --pack-gradient: linear-gradient(170deg, #0c1a42 0%, #1e3a6e 55%, #0f1e40 100%);
+  --pack-glow:     rgba(59,130,246,0.45);
 }
 .pack-green {
-  --pack-color:    #4ade80;
-  --pack-crimp:    #15803d;
-  --pack-gradient: linear-gradient(180deg, #14532d 0%, #16a34a 50%, #15803d 100%);
-  --pack-glow:     rgba(34,197,94,0.4);
+  --pack-color:    #6ee7b7;
+  --pack-crimp:    #065f46;
+  --pack-gradient: linear-gradient(170deg, #052e16 0%, #065f46 55%, #052e16 100%);
+  --pack-glow:     rgba(16,185,129,0.45);
 }
 .pack-orange {
-  --pack-color:    #fb923c;
-  --pack-crimp:    #c2410c;
-  --pack-gradient: linear-gradient(180deg, #7c2d12 0%, #ea580c 50%, #c2410c 100%);
-  --pack-glow:     rgba(249,115,22,0.4);
+  --pack-color:    #fdba74;
+  --pack-crimp:    #92400e;
+  --pack-gradient: linear-gradient(170deg, #431407 0%, #78350f 55%, #3c1308 100%);
+  --pack-glow:     rgba(234,88,12,0.55);
 }
 .pack-red {
-  --pack-color:    #f87171;
-  --pack-crimp:    #991b1b;
-  --pack-gradient: linear-gradient(180deg, #450a0a 0%, #dc2626 50%, #991b1b 100%);
-  --pack-glow:     rgba(239,68,68,0.4);
+  --pack-color:    #fbbf24;
+  --pack-crimp:    #78350f;
+  --pack-gradient: linear-gradient(170deg, #1c0a00 0%, #451a03 55%, #1c0a00 100%);
+  --pack-glow:     rgba(245,158,11,0.5);
 }
 
 /* ── Pack info ───────────────────────────────────────── */

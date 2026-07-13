@@ -81,10 +81,17 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
           <span className="pack-rating">8+</span>
         </div>
         <div className="pack-art">
-          <div className="pack-spotlight" />
-          <div className="pack-c pack-c1" />
-          <div className="pack-c pack-c2" />
-          <div className="pack-c pack-c3" />
+          <div className="pack-court-arc" />
+          <svg className="pack-ball" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="28" fill="#ea580c"/>
+            <ellipse cx="21" cy="19" rx="9" ry="6" fill="rgba(255,210,120,0.18)"/>
+            <circle cx="30" cy="30" r="28" stroke="#1a0500" strokeWidth="1.5"/>
+            <path d="M2 30 Q15 20 30 30 Q45 40 58 30" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M2 30 Q15 40 30 30 Q45 20 58 30" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M30 2 Q20 15 30 30 Q40 45 30 58" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M30 2 Q40 15 30 30 Q20 45 30 58" stroke="#1a0500" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+          </svg>
+          <div className="pack-ball-glow" />
         </div>
         <div className="pack-namebar">
           <span className="pack-namebar-title">{pack.name}</span>
