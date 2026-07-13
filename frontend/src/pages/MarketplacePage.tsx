@@ -75,24 +75,30 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
   const canAfford = credits >= pack.price
   return (
     <div className={`mp-pack ${pack.colorClass}`}>
-      <div className="pack-visual">
-        <div className="pack-seam" />
-        <div className="pack-art">
-          <div className="pack-fan-card pack-fan-1" />
-          <div className="pack-fan-card pack-fan-2" />
-          <div className="pack-fan-card pack-fan-3" />
+      <div className="pack-bag">
+        <div className="pack-top-band">
+          <span className="pack-game-name">HOOPS TCG</span>
+          <span className="pack-age-badge">8+</span>
         </div>
-        <div className="pack-label">
-          <div className="pack-name">{pack.name}</div>
-          <div className="pack-sub">{pack.sub}</div>
+        <div className="pack-art-zone">
+          <div className="pack-art-glow" />
+          <div className="pack-fan-wrap">
+            <div className="pack-fan-card pack-fan-1" />
+            <div className="pack-fan-card pack-fan-2" />
+            <div className="pack-fan-card pack-fan-3" />
+          </div>
+        </div>
+        <div className="pack-name-band">
+          <span className="pack-set-name">{pack.name}</span>
+          <span className="pack-set-sub">{pack.sub}</span>
+        </div>
+        <div className="pack-count-strip">
+          <span>{pack.cardCount} cartes</span>
+          <span>{pack.price} CR</span>
         </div>
       </div>
 
       <p className="pack-desc">{pack.description}</p>
-      <div className="pack-price">
-        <span className="price-num">{pack.price}</span>
-        <span className="price-label">crédits</span>
-      </div>
 
       <button
         type="button"

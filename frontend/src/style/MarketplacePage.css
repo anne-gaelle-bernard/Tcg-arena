@@ -95,91 +95,158 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding-bottom: 4px;
+  gap: 12px;
 }
 
-/* ── PACK VISUAL (booster pack shape) ───────────────── */
-.pack-visual {
-  width: 140px;
-  height: 196px;
+/* ── PACK BAG ────────────────────────────────────────── */
+.pack-bag {
+  width: 155px;
+  height: 220px;
   border-radius: 8px;
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--pack-gradient);
-  filter: drop-shadow(0 8px 24px var(--pack-glow));
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:
+    inset 8px 0 18px rgba(0,0,0,0.55),
+    inset -8px 0 18px rgba(0,0,0,0.55),
+    0 14px 40px var(--pack-glow);
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
 }
-.mp-pack:hover .pack-visual { transform: translateY(-10px) scale(1.04); }
+.mp-pack:hover .pack-bag {
+  transform: translateY(-14px) rotate(-1.5deg) scale(1.05);
+  box-shadow:
+    inset 8px 0 18px rgba(0,0,0,0.55),
+    inset -8px 0 18px rgba(0,0,0,0.55),
+    0 28px 55px var(--pack-glow);
+}
 
-/* Foil shimmer overlay */
-.pack-visual::after {
+/* Foil diagonal shine */
+.pack-bag::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    transparent 20%,
-    rgba(255,255,255,0.09) 50%,
-    transparent 80%
+    rgba(255,255,255,0.22) 0%,
+    rgba(255,255,255,0.06) 30%,
+    transparent 50%,
+    rgba(255,255,255,0.04) 70%,
+    rgba(255,255,255,0.14) 100%
   );
   pointer-events: none;
-  z-index: 4;
+  z-index: 8;
 }
 
-/* Top seam */
-.pack-seam {
-  height: 22px;
-  flex-shrink: 0;
-  background: var(--pack-crimp);
-  position: relative;
-  z-index: 2;
-}
-/* Tear notch */
-.pack-seam::after {
+/* Heat-sealed side ridges */
+.pack-bag::after {
   content: '';
   position: absolute;
-  right: 20px;
-  bottom: -6px;
-  width: 14px;
-  height: 8px;
-  background: var(--pack-crimp);
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  z-index: 3;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 5px
+    ) left / 15px 100% no-repeat,
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 5px
+    ) right / 15px 100% no-repeat;
+  pointer-events: none;
+  z-index: 7;
 }
 
-/* Card silhouettes art area */
-.pack-art {
+/* ── TOP HEADER BAND ─────────────────────────────────── */
+.pack-top-band {
+  height: 30px;
+  flex-shrink: 0;
+  background: var(--pack-crimp);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 11px;
+  position: relative;
+  z-index: 3;
+}
+/* Zigzag bottom edge */
+.pack-top-band::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0; right: 0;
+  height: 10px;
+  background: var(--pack-crimp);
+  clip-path: polygon(
+    0% 0%,5% 100%,10% 0%,15% 100%,20% 0%,25% 100%,
+    30% 0%,35% 100%,40% 0%,45% 100%,50% 0%,55% 100%,
+    60% 0%,65% 100%,70% 0%,75% 100%,80% 0%,85% 100%,
+    90% 0%,95% 100%,100% 0%
+  );
+  z-index: 2;
+}
+
+.pack-game-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+.pack-age-badge {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 2px;
+  padding: 1px 4px;
+}
+
+/* ── ART ZONE ────────────────────────────────────────── */
+.pack-art-zone {
   flex: 1;
   position: relative;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.pack-art-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, var(--pack-color) 0%, transparent 68%);
+  opacity: 0.45;
+}
+.pack-fan-wrap {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .pack-fan-card {
   position: absolute;
-  width: 56px;
-  height: 78px;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+  width: 60px;
+  height: 84px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
 }
-.pack-fan-1 { transform: rotate(-14deg) translate(-22px, 6px); }
-.pack-fan-2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; }
+.pack-fan-1 { transform: rotate(-16deg) translate(-26px, 10px); }
+.pack-fan-2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; background: rgba(255,255,255,0.11); }
 .pack-fan-3 {
-  transform: rotate(10deg) translate(18px, -5px);
+  transform: rotate(11deg) translate(22px, -6px);
   z-index: 2;
-  background: rgba(255,255,255,0.14);
-  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.35);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
-/* Bottom label strip */
-.pack-label {
-  height: 46px;
+/* ── NAME BAND ───────────────────────────────────────── */
+.pack-name-band {
+  height: 48px;
   flex-shrink: 0;
   background: var(--pack-crimp);
   display: flex;
@@ -187,25 +254,52 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  z-index: 2;
+  position: relative;
+  z-index: 3;
+  padding-top: 10px;
+  /* Zigzag top edge */
+  clip-path: polygon(
+    0% 20%, 5% 0%, 10% 20%, 15% 0%, 20% 20%, 25% 0%,
+    30% 20%, 35% 0%, 40% 20%, 45% 0%, 50% 20%, 55% 0%,
+    60% 20%, 65% 0%, 70% 20%, 75% 0%, 80% 20%, 85% 0%,
+    90% 20%, 95% 0%, 100% 20%, 100% 100%, 0% 100%
+  );
 }
-
-.pack-name {
+.pack-set-name {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  text-shadow:
+    0 0 14px var(--pack-color),
+    0 0 4px var(--pack-color),
+    0 2px 5px rgba(0,0,0,0.9);
+}
+.pack-set-sub {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
 }
 
-.pack-sub {
-  font-size: 9px;
+/* ── FOOTER COUNT STRIP ──────────────────────────────── */
+.pack-count-strip {
+  height: 20px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.5);
+  z-index: 3;
 }
 
 /* ── Pack color themes ───────────────────────────────── */
