@@ -240,8 +240,10 @@
 
 .cards-column {
   display: flex;
-  flex-direction: column;
-  gap: 18px;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .tcg-card {

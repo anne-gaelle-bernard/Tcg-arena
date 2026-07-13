@@ -1,6 +1,8 @@
 import '../style/DashboardPage.css'
 import type { AuthUser } from '../services/authApi'
 import { usePlayerState } from '../store/playerState'
+import { ALL_CARDS } from '../data/cards'
+import CardSvg from '../components/collection/CardSvg'
 
 type DashboardPageProps = {
   onLogout: () => void
@@ -14,14 +16,6 @@ type MenuItem = {
   active?: boolean
 }
 
-type FeaturedCard = {
-  id: number
-  playerName: string
-  team: string
-  score: number
-  badge: string
-}
-
 const menuItems: MenuItem[] = [
   { id: 'play', label: 'Play Now', active: true },
   { id: 'deck', label: 'Mon Deck' },
@@ -29,22 +23,7 @@ const menuItems: MenuItem[] = [
   { id: 'market', label: 'Marketplace' },
 ]
 
-const featuredCards: FeaturedCard[] = [
-  {
-    id: 1,
-    playerName: 'LeBron James',
-    team: 'Los Angeles Lakers',
-    score: 99,
-    badge: 'MVP',
-  },
-  {
-    id: 2,
-    playerName: 'Caitlin Clark',
-    team: 'Indiana Fever',
-    score: 96,
-    badge: 'Rookie',
-  },
-]
+const featuredCards = ALL_CARDS.filter(c => c.theme === 'legends').slice(0, 3)
 
 export default function DashboardPage({ onLogout, user, onNavigate }: DashboardPageProps) {
   const { state } = usePlayerState()
@@ -112,16 +91,7 @@ export default function DashboardPage({ onLogout, user, onNavigate }: DashboardP
 
           <div className="cards-column">
             {featuredCards.map(card => (
-              <article key={card.id} className="tcg-card">
-                <div className="tcg-card-top">
-                  <span className="tcg-badge">{card.badge}</span>
-                  <span className="tcg-score">{card.score}</span>
-                </div>
-                <div className="tcg-card-body">
-                  <h2>{card.playerName}</h2>
-                  <p>{card.team}</p>
-                </div>
-              </article>
+              <CardSvg key={card.id} card={card} width={120} />
             ))}
           </div>
         </section>
