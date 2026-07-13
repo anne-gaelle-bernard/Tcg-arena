@@ -63,12 +63,6 @@ async function ensurePlayerRole() {
  *         message:
  *           type: string
  *           example: Login successful.
- *         token:
- *           type: string
- *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *         refreshToken:
- *           type: string
- *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *         user:
  *           $ref: '#/components/schemas/PlayerPublic'
  */
@@ -133,7 +127,7 @@ router.post('/register', async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Password must have at least 6 characters.' });
   try {
     const existingPlayer = await pool.query('SELECT player_id FROM player WHERE mail = $1', [email]);
-    if (existingPlayer.rowCount > 0)
+    if ((existingPlayer.rowCount ?? 0) > 0)
       return res.status(409).json({ message: 'Email already used.' });
     const roleId = await ensurePlayerRole();
     const passwordHash = await bcrypt.hash(password, 10);
@@ -207,7 +201,7 @@ router.post('/login', async (req: Request, res: Response) => {
       'SELECT player_id, username, mail, password, level FROM player WHERE mail = $1 LIMIT 1',
       [email]
     );
-    if (result.rowCount === 0)
+    if ((result.rowCount ?? 0) === 0)
       return res.status(401).json({ message: 'Invalid credentials.' });
     const user = result.rows[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);

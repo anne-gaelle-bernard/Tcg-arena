@@ -21,19 +21,19 @@ const router = express.Router();
  *           example: 1
  *         type:
  *           type: string
- *           enum: [basic, premium, legend]
+ *           enum: [basic, standard, premium, legend]
  *           example: basic
  *         price:
  *           type: integer
- *           description: Prix en crédits
- *           example: 100
+ *           description: Prix en crédits (basic=5, standard=10, premium=25, legend=40)
+ *           example: 5
  *         cards_count:
  *           type: integer
  *           description: Nombre de cartes dans le booster
- *           example: 10
+ *           example: 3
  *         description:
  *           type: string
- *           example: '60% Talents · 30% Spéciales · 10% Légendes'
+ *           example: '3 cartes Talents aléatoires'
  *     BoosterOpenResult:
  *       type: object
  *       properties:
@@ -84,7 +84,7 @@ router.get('/', (_req: Request, res: Response) => {
  *             properties:
  *               type:
  *                 type: string
- *                 enum: [basic, premium, legend]
+ *                 enum: [basic, standard, premium, legend]
  *                 example: basic
  *     responses:
  *       200:
@@ -131,7 +131,7 @@ router.post('/buy', (_req: Request, res: Response) => {
  * /api/boosters/open:
  *   post:
  *     tags: [Boosters]
- *     summary: Ouvrir un booster acheté et recevoir 10 cartes
+ *     summary: Ouvrir un booster acheté et recevoir 3 cartes
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -148,7 +148,7 @@ router.post('/buy', (_req: Request, res: Response) => {
  *                 example: 42
  *     responses:
  *       200:
- *         description: Booster ouvert — liste des 10 cartes reçues
+ *         description: Booster ouvert — liste des 3 cartes reçues
  *         content:
  *           application/json:
  *             schema:
