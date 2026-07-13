@@ -76,29 +76,29 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
   return (
     <div className={`mp-pack ${pack.colorClass}`}>
       <div className="pack-bag">
-        <div className="pack-top-band">
-          <span className="pack-game-name">HOOPS TCG</span>
-          <span className="pack-age-badge">8+</span>
+        <div className="pack-header">
+          <span className="pack-game-label">HOOPS TCG</span>
+          <span className="pack-rating">8+</span>
         </div>
-        <div className="pack-art-zone">
-          <div className="pack-art-glow" />
-          <div className="pack-fan-wrap">
-            <div className="pack-fan-card pack-fan-1" />
-            <div className="pack-fan-card pack-fan-2" />
-            <div className="pack-fan-card pack-fan-3" />
-          </div>
+        <div className="pack-art">
+          <div className="pack-spotlight" />
+          <div className="pack-c pack-c1" />
+          <div className="pack-c pack-c2" />
+          <div className="pack-c pack-c3" />
         </div>
-        <div className="pack-name-band">
-          <span className="pack-set-name">{pack.name}</span>
-          <span className="pack-set-sub">{pack.sub}</span>
+        <div className="pack-namebar">
+          <span className="pack-namebar-title">{pack.name}</span>
+          <span className="pack-namebar-sub">{pack.sub}</span>
         </div>
-        <div className="pack-count-strip">
-          <span>{pack.cardCount} cartes</span>
-          <span>{pack.price} CR</span>
+        <div className="pack-strip">
+          {pack.cardCount} cartes supplémentaires
         </div>
       </div>
 
-      <p className="pack-desc">{pack.description}</p>
+      <div className="pack-price">
+        <span className="price-num">{pack.price}</span>
+        <span className="price-label"> crédits</span>
+      </div>
 
       <button
         type="button"

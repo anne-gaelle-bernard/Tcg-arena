@@ -100,153 +100,104 @@
 
 /* ── PACK BAG ────────────────────────────────────────── */
 .pack-bag {
-  width: 155px;
-  height: 220px;
-  border-radius: 8px;
-  position: relative;
+  width: 148px;
+  height: 210px;
+  border-radius: 6px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--pack-gradient);
-  box-shadow:
-    inset 8px 0 18px rgba(0,0,0,0.55),
-    inset -8px 0 18px rgba(0,0,0,0.55),
-    0 14px 40px var(--pack-glow);
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s;
+  position: relative;
+  box-shadow: 0 10px 32px var(--pack-glow);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 .mp-pack:hover .pack-bag {
-  transform: translateY(-14px) rotate(-1.5deg) scale(1.05);
-  box-shadow:
-    inset 8px 0 18px rgba(0,0,0,0.55),
-    inset -8px 0 18px rgba(0,0,0,0.55),
-    0 28px 55px var(--pack-glow);
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 22px 44px var(--pack-glow);
 }
-
-/* Foil diagonal shine */
-.pack-bag::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.22) 0%,
-    rgba(255,255,255,0.06) 30%,
-    transparent 50%,
-    rgba(255,255,255,0.04) 70%,
-    rgba(255,255,255,0.14) 100%
-  );
-  pointer-events: none;
-  z-index: 8;
-}
-
-/* Heat-sealed side ridges */
+/* Single clean foil reflection */
 .pack-bag::after {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 5px
-    ) left / 15px 100% no-repeat,
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 5px
-    ) right / 15px 100% no-repeat;
+  background: linear-gradient(
+    140deg,
+    rgba(255,255,255,0.18) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(255,255,255,0.07) 100%
+  );
   pointer-events: none;
-  z-index: 7;
+  z-index: 10;
 }
 
-/* ── TOP HEADER BAND ─────────────────────────────────── */
-.pack-top-band {
-  height: 30px;
+/* ── HEADER ──────────────────────────────────────────── */
+.pack-header {
+  height: 28px;
   flex-shrink: 0;
   background: var(--pack-crimp);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 11px;
-  position: relative;
-  z-index: 3;
+  padding: 0 10px;
 }
-/* Zigzag bottom edge */
-.pack-top-band::after {
-  content: '';
-  position: absolute;
-  bottom: -9px;
-  left: 0; right: 0;
-  height: 10px;
-  background: var(--pack-crimp);
-  clip-path: polygon(
-    0% 0%,5% 100%,10% 0%,15% 100%,20% 0%,25% 100%,
-    30% 0%,35% 100%,40% 0%,45% 100%,50% 0%,55% 100%,
-    60% 0%,65% 100%,70% 0%,75% 100%,80% 0%,85% 100%,
-    90% 0%,95% 100%,100% 0%
-  );
-  z-index: 2;
-}
-
-.pack-game-name {
+.pack-game-label {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #fff;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
 }
-.pack-age-badge {
+.pack-rating {
   font-family: 'Chakra Petch', sans-serif;
   font-size: 8px;
   font-weight: 700;
-  color: rgba(255,255,255,0.75);
-  border: 1px solid rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.4);
   border-radius: 2px;
-  padding: 1px 4px;
+  padding: 0 3px;
 }
 
 /* ── ART ZONE ────────────────────────────────────────── */
-.pack-art-zone {
+.pack-art {
   flex: 1;
+  background: var(--pack-gradient);
   position: relative;
   overflow: hidden;
-  margin-top: 4px;
-}
-.pack-art-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 60%, var(--pack-color) 0%, transparent 68%);
-  opacity: 0.45;
-}
-.pack-fan-wrap {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.pack-fan-card {
+.pack-spotlight {
   position: absolute;
-  width: 60px;
-  height: 84px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.09);
-  border: 1px solid rgba(255,255,255,0.22);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pack-color) 0%, transparent 70%);
+  opacity: 0.35;
 }
-.pack-fan-1 { transform: rotate(-16deg) translate(-26px, 10px); }
-.pack-fan-2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; background: rgba(255,255,255,0.11); }
-.pack-fan-3 {
-  transform: rotate(11deg) translate(22px, -6px);
+/* Cards fan — positioned absolutely */
+.pack-c {
+  position: absolute;
+  width: 56px;
+  height: 78px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.5);
+}
+.pack-c1 { transform: rotate(-14deg) translate(-22px, 8px); }
+.pack-c2 { transform: rotate(-3deg) translateX(-3px); z-index: 1; background: rgba(255,255,255,0.11); }
+.pack-c3 {
+  transform: rotate(10deg) translate(20px, -6px);
   z-index: 2;
-  background: rgba(255,255,255,0.16);
-  border-color: rgba(255,255,255,0.35);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.32);
 }
 
 /* ── NAME BAND ───────────────────────────────────────── */
-.pack-name-band {
-  height: 48px;
+.pack-namebar {
+  height: 44px;
   flex-shrink: 0;
   background: var(--pack-crimp);
   display: flex;
@@ -254,52 +205,37 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  position: relative;
-  z-index: 3;
-  padding-top: 10px;
-  /* Zigzag top edge */
-  clip-path: polygon(
-    0% 20%, 5% 0%, 10% 20%, 15% 0%, 20% 20%, 25% 0%,
-    30% 20%, 35% 0%, 40% 20%, 45% 0%, 50% 20%, 55% 0%,
-    60% 20%, 65% 0%, 70% 20%, 75% 0%, 80% 20%, 85% 0%,
-    90% 20%, 95% 0%, 100% 20%, 100% 100%, 0% 100%
-  );
 }
-.pack-set-name {
+.pack-namebar-title {
   font-family: 'Chakra Petch', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #fff;
-  text-shadow:
-    0 0 14px var(--pack-color),
-    0 0 4px var(--pack-color),
-    0 2px 5px rgba(0,0,0,0.9);
+  text-shadow: 0 0 10px var(--pack-color), 0 1px 3px rgba(0,0,0,0.8);
 }
-.pack-set-sub {
+.pack-namebar-sub {
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
 }
 
-/* ── FOOTER COUNT STRIP ──────────────────────────────── */
-.pack-count-strip {
-  height: 20px;
+/* ── BOTTOM STRIP ────────────────────────────────────── */
+.pack-strip {
+  height: 18px;
   flex-shrink: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  font-size: 8px;
+  justify-content: center;
+  font-size: 7px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  z-index: 3;
+  color: rgba(255,255,255,0.45);
 }
 
 /* ── Pack color themes ───────────────────────────────── */
