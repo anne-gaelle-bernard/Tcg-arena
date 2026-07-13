@@ -3,33 +3,40 @@ import { TALENT_IDS } from '../data/cards'
 
 interface PlayerState {
   unlockedIds: string[]
-  credits: number
-  lossStreak: number
-  savedDeck: string[]
+  credits:     number
+  lossStreak:  number
+  savedDeck:   string[]
 }
 
-const STORAGE_KEY = 'tcg_player_v1'
-const LOSS_STREAK_MAX = 5
+const STORAGE_KEY      = 'tcg_player_v1'
+const LOSS_STREAK_MAX    = 5
 const LOSS_STREAK_REWARD = 10
 
 function loadState(): PlayerState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw) as PlayerState
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved) as PlayerState
       if (Array.isArray(parsed.unlockedIds)) {
         return {
           unlockedIds: parsed.unlockedIds,
-          credits: parsed.credits ?? 50,
-          lossStreak: parsed.lossStreak ?? 0,
-          savedDeck: Array.isArray(parsed.savedDeck) ? parsed.savedDeck : [],
+          credits:     parsed.credits    ?? 50,
+          lossStreak:  parsed.lossStreak ?? 0,
+          savedDeck:   Array.isArray(parsed.savedDeck) ? parsed.savedDeck : [],
         }
       }
     }
   } catch {}
-  const initial: PlayerState = { unlockedIds: [...TALENT_IDS], credits: 50, lossStreak: 0, savedDeck: [] }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(initial))
-  return initial
+
+  // Aucune sauvegarde trouvée : on crée un état de départ
+  const initialState: PlayerState = {
+    unlockedIds: [...TALENT_IDS],
+    credits:     50,
+    lossStreak:  0,
+    savedDeck:   [],
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(initialState))
+  return initialState
 }
 
 function saveState(state: PlayerState): void {
@@ -39,14 +46,14 @@ function saveState(state: PlayerState): void {
 export function usePlayerState() {
   const [state, setState] = useState<PlayerState>(loadState)
 
-  function hasCard(id: string): boolean {
-    return state.unlockedIds.includes(id)
+  function hasCard(cardId: string): boolean {
+    return state.unlockedIds.includes(cardId)
   }
 
-  function unlockCard(id: string): void {
+  function unlockCard(cardId: string): void {
     setState(prev => {
-      if (prev.unlockedIds.includes(id)) return prev
-      const next = { ...prev, unlockedIds: [...prev.unlockedIds, id] }
+      if (prev.unlockedIds.includes(cardId)) return prev
+      const next = { ...prev, unlockedIds: [...prev.unlockedIds, cardId] }
       saveState(next)
       return next
     })
@@ -61,15 +68,14 @@ export function usePlayerState() {
   }
 
   function spendCredits(amount: number): boolean {
-    let ok = false
+    if (state.credits < amount) return false
     setState(prev => {
       if (prev.credits < amount) return prev
-      ok = true
       const next = { ...prev, credits: prev.credits - amount }
       saveState(next)
       return next
     })
-    return ok
+    return true
   }
 
   function saveDeck(deckIds: string[]): void {
@@ -80,25 +86,30 @@ export function usePlayerState() {
     })
   }
 
-  function recordMatch(win: boolean): number {
-    let awarded = 0
+  function recordMatch(won: boolean): number {
+    let creditsAwarded = 0
+
     setState(prev => {
-      let next: PlayerState
-      if (win) {
-        next = { ...prev, lossStreak: 0 }
-      } else {
-        const newStreak = prev.lossStreak + 1
-        if (newStreak >= LOSS_STREAK_MAX) {
-          awarded = LOSS_STREAK_REWARD
-          next = { ...prev, lossStreak: 0, credits: prev.credits + LOSS_STREAK_REWARD }
-        } else {
-          next = { ...prev, lossStreak: newStreak }
-        }
+      if (won) {
+        const next = { ...prev, lossStreak: 0 }
+        saveState(next)
+        return next
       }
+
+      const newStreak = prev.lossStreak + 1
+      if (newStreak >= LOSS_STREAK_MAX) {
+        creditsAwarded = LOSS_STREAK_REWARD
+        const next = { ...prev, lossStreak: 0, credits: prev.credits + LOSS_STREAK_REWARD }
+        saveState(next)
+        return next
+      }
+
+      const next = { ...prev, lossStreak: newStreak }
       saveState(next)
       return next
     })
-    return awarded
+
+    return creditsAwarded
   }
 
   return { state, hasCard, unlockCard, addCredits, spendCredits, saveDeck, recordMatch }

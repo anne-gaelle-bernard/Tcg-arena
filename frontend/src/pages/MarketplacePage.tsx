@@ -17,17 +17,23 @@ interface PackDef {
   draw:        (unlocked: string[]) => CardData[]
 }
 
-function rnd<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
-function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 0.5) }
+function pickRandom<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)]
+}
 
-const TALENTS  = ALL_CARDS.filter(c => c.theme === 'talents')
-const SPECIALS = ALL_CARDS.filter(c => c.theme === 'specials')
-const LEGENDS  = ALL_CARDS.filter(c => c.theme === 'legends')
+function shuffled<T>(array: T[]): T[] {
+  return [...array].sort(() => Math.random() - 0.5)
+}
 
-function prefer(pool: CardData[], unlocked: string[], n: number): CardData[] {
-  const fresh = pool.filter(c => !unlocked.includes(c.id))
-  const src   = shuffle(fresh.length >= n ? fresh : pool)
-  return src.slice(0, n)
+const TALENTS  = ALL_CARDS.filter(card => card.theme === 'talents')
+const SPECIALS = ALL_CARDS.filter(card => card.theme === 'specials')
+const LEGENDS  = ALL_CARDS.filter(card => card.theme === 'legends')
+
+// Pioche n cartes depuis pool, en privilégiant celles que le joueur n'a pas encore
+function pickPreferringNew(pool: CardData[], unlockedIds: string[], count: number): CardData[] {
+  const newCards  = pool.filter(card => !unlockedIds.includes(card.id))
+  const source    = shuffled(newCards.length >= count ? newCards : pool)
+  return source.slice(0, count)
 }
 
 const PACKS: PackDef[] = [
@@ -40,7 +46,7 @@ const PACKS: PackDef[] = [
     description: '3 cartes Talents aléatoires',
     cardCount:   3,
     svgSrc:      '/boosters/bronze.svg',
-    draw: (u) => prefer(TALENTS, u, 3),
+    draw: (unlockedIds) => pickPreferringNew(TALENTS, unlockedIds, 3),
   },
   {
     id:          'standard',
@@ -51,7 +57,10 @@ const PACKS: PackDef[] = [
     description: '2 Talents + 1 Spéciale',
     cardCount:   3,
     svgSrc:      '/boosters/talents.svg',
-    draw: (u) => [...prefer(TALENTS, u, 2), ...prefer(SPECIALS, u, 1)],
+    draw: (unlockedIds) => [
+      ...pickPreferringNew(TALENTS, unlockedIds, 2),
+      ...pickPreferringNew(SPECIALS, unlockedIds, 1),
+    ],
   },
   {
     id:          'premium',
@@ -62,7 +71,10 @@ const PACKS: PackDef[] = [
     description: '1 Talent + 2 Spéciales',
     cardCount:   3,
     svgSrc:      '/boosters/diamond.svg',
-    draw: (u) => [...prefer(TALENTS, u, 1), ...prefer(SPECIALS, u, 2)],
+    draw: (unlockedIds) => [
+      ...pickPreferringNew(TALENTS, unlockedIds, 1),
+      ...pickPreferringNew(SPECIALS, unlockedIds, 2),
+    ],
   },
   {
     id:          'legend',
@@ -73,7 +85,12 @@ const PACKS: PackDef[] = [
     description: '2 Spéciales + 1 Légende garantie',
     cardCount:   3,
     svgSrc:      '/boosters/legends.svg',
-    draw: (u) => [...prefer(SPECIALS, u, 2), rnd(prefer(LEGENDS, u, LEGENDS.length) as CardData[]) ?? rnd(LEGENDS)],
+    draw: (unlockedIds) => {
+      const specials  = pickPreferringNew(SPECIALS, unlockedIds, 2)
+      const newLegend = pickPreferringNew(LEGENDS, unlockedIds, LEGENDS.length)
+      const legend    = pickRandom(newLegend.length > 0 ? newLegend : LEGENDS)
+      return [...specials, legend]
+    },
   },
 ]
 
