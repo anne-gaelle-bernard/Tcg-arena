@@ -7,12 +7,22 @@ import '../style/DeckBuilderPage.css'
 
 type Props = { onBack: () => void }
 
+function getThemeLabel(theme: 'all' | 'talents' | 'specials' | 'legends'): string {
+  if (theme === 'all')      return 'Tous'
+  if (theme === 'talents')  return 'Talents'
+  if (theme === 'specials') return 'Spéciales'
+  return 'Légendes'
+}
+
 export default function DeckBuilderPage({ onBack }: Props) {
   const { state, saveDeck } = usePlayerState()
 
-  const [deckIds, setDeckIds] = useState<string[]>(
-    state.savedDeck.length >= DECK_MIN ? state.savedDeck : []
-  )
+  const [deckIds, setDeckIds] = useState<string[]>(() => {
+    if (state.savedDeck.length >= DECK_MIN) {
+      return state.savedDeck
+    }
+    return []
+  })
   const [search, setSearch] = useState('')
   const [theme,  setTheme]  = useState<'all' | 'talents' | 'specials' | 'legends'>('all')
   const [zoomed, setZoomed] = useState<CardData | null>(null)
@@ -22,10 +32,10 @@ export default function DeckBuilderPage({ onBack }: Props) {
     .filter(c => theme === 'all' || c.theme === theme)
     .filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
 
-  const deckCards  = deckIds.map(id => ALL_CARDS.find(c => c.id === id)!).filter(Boolean)
+  const deckCards   = deckIds.map(id => ALL_CARDS.find(c => c.id === id)!).filter(Boolean)
   const legendCount = deckCards.filter(c => c.theme === 'legends').length
-  const isFull     = deckIds.length >= DECK_MAX
-  const isValid    = deckIds.length >= DECK_MIN
+  const isFull      = deckIds.length >= DECK_MAX
+  const isValid     = deckIds.length >= DECK_MIN
 
   function toggle(card: CardData) {
     if (deckIds.includes(card.id)) {
@@ -46,6 +56,12 @@ export default function DeckBuilderPage({ onBack }: Props) {
   function reset() { setDeckIds([]) }
 
   const costColor: Record<number, string> = { 1: '#60a5fa', 2: '#a78bfa', 3: '#f2c94c' }
+
+  let confirmBtnClass = 'db-btn-confirm'
+  if (!isValid) confirmBtnClass += ' db-btn-disabled'
+
+  let confirmBtnText = `Min. ${DECK_MIN} cartes`
+  if (isValid) confirmBtnText = `Confirmer (${deckIds.length})`
 
   return (
     <div className="db-shell">
@@ -69,16 +85,21 @@ export default function DeckBuilderPage({ onBack }: Props) {
               onChange={e => setSearch(e.target.value)}
             />
             <div className="db-theme-filters">
-              {(['all', 'talents', 'specials', 'legends'] as const).map(t => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`db-theme-btn db-theme-${t} ${theme === t ? 'db-theme-active' : ''}`}
-                  onClick={() => setTheme(t)}
-                >
-                  {t === 'all' ? 'Tous' : t === 'talents' ? 'Talents' : t === 'specials' ? 'Spéciales' : 'Légendes'}
-                </button>
-              ))}
+              {(['all', 'talents', 'specials', 'legends'] as const).map(t => {
+                let btnClass = `db-theme-btn db-theme-${t}`
+                if (theme === t) btnClass += ' db-theme-active'
+
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    className={btnClass}
+                    onClick={() => setTheme(t)}
+                  >
+                    {getThemeLabel(t)}
+                  </button>
+                )
+              })}
             </div>
           </div>
           <p className="db-hint">
@@ -89,13 +110,27 @@ export default function DeckBuilderPage({ onBack }: Props) {
             {owned.map(card => {
               const selected = deckIds.includes(card.id)
               const blocked  = !selected && (isFull || (card.theme === 'legends' && legendCount >= DECK_MAX_LEGENDS))
+
+              let cardWrapClass = 'db-card-wrap'
+              if (selected) cardWrapClass += ' db-card-selected'
+              if (blocked)  cardWrapClass += ' db-card-blocked'
+
+              let tooltipText: string | undefined
+              if (blocked) {
+                if (isFull) {
+                  tooltipText = 'Deck plein'
+                } else {
+                  tooltipText = 'Max légendes atteint'
+                }
+              }
+
               return (
-                <div key={card.id} className={`db-card-wrap ${selected ? 'db-card-selected' : ''} ${blocked ? 'db-card-blocked' : ''}`}>
+                <div key={card.id} className={cardWrapClass}>
                   <button
                     type="button"
                     className="db-card"
                     onClick={() => toggle(card)}
-                    title={blocked ? (isFull ? 'Deck plein' : 'Max légendes atteint') : undefined}
+                    title={tooltipText}
                   >
                     <CardSvg card={card} width={110} />
                     <div className="db-card-cost" style={{ background: costColor[cardCost(card)] }}>
@@ -118,9 +153,11 @@ export default function DeckBuilderPage({ onBack }: Props) {
         <aside className="db-sidebar">
           <h2 className="db-sidebar-title">DECK ACTUEL</h2>
 
-          {deckCards.length === 0 ? (
+          {deckCards.length === 0 && (
             <p className="db-empty">Ajoutez des cartes depuis la collection</p>
-          ) : (
+          )}
+
+          {deckCards.length > 0 && (
             <ul className="db-list">
               {deckCards.map(card => (
                 <li key={card.id} className={`db-list-item db-li-${card.theme}`}>
@@ -149,11 +186,11 @@ export default function DeckBuilderPage({ onBack }: Props) {
               <button type="button" className="db-btn-reset" onClick={reset}>Réinitialiser</button>
               <button
                 type="button"
-                className={`db-btn-confirm ${isValid ? '' : 'db-btn-disabled'}`}
+                className={confirmBtnClass}
                 onClick={confirm}
                 disabled={!isValid}
               >
-                {isValid ? `Confirmer (${deckIds.length})` : `Min. ${DECK_MIN} cartes`}
+                {confirmBtnText}
               </button>
             </div>
           </div>

@@ -29,10 +29,16 @@ const TALENTS  = ALL_CARDS.filter(card => card.theme === 'talents')
 const SPECIALS = ALL_CARDS.filter(card => card.theme === 'specials')
 const LEGENDS  = ALL_CARDS.filter(card => card.theme === 'legends')
 
-// Pioche n cartes depuis pool, en privilégiant celles que le joueur n'a pas encore
 function pickPreferringNew(pool: CardData[], unlockedIds: string[], count: number): CardData[] {
-  const newCards  = pool.filter(card => !unlockedIds.includes(card.id))
-  const source    = shuffled(newCards.length >= count ? newCards : pool)
+  const newCards = pool.filter(card => !unlockedIds.includes(card.id))
+
+  let source: CardData[]
+  if (newCards.length >= count) {
+    source = shuffled(newCards)
+  } else {
+    source = shuffled(pool)
+  }
+
   return source.slice(0, count)
 }
 
@@ -88,7 +94,15 @@ const PACKS: PackDef[] = [
     draw: (unlockedIds) => {
       const specials  = pickPreferringNew(SPECIALS, unlockedIds, 2)
       const newLegend = pickPreferringNew(LEGENDS, unlockedIds, LEGENDS.length)
-      const legend    = pickRandom(newLegend.length > 0 ? newLegend : LEGENDS)
+
+      let legendPool: CardData[]
+      if (newLegend.length > 0) {
+        legendPool = newLegend
+      } else {
+        legendPool = LEGENDS
+      }
+
+      const legend = pickRandom(legendPool)
       return [...specials, legend]
     },
   },
@@ -96,6 +110,17 @@ const PACKS: PackDef[] = [
 
 function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; onBuy: (p: PackDef) => void }) {
   const canAfford = credits >= pack.price
+
+  let btnClass = 'pack-buy-btn'
+  if (!canAfford) btnClass += ' pack-buy-disabled'
+
+  let btnText = 'Acheter'
+  if (!canAfford) btnText = 'Crédits insuffisants'
+
+  function handleBuyClick() {
+    if (canAfford) onBuy(pack)
+  }
+
   return (
     <div className="mp-pack">
       <div className="pack-img-wrap">
@@ -104,11 +129,11 @@ function PackCard({ pack, credits, onBuy }: { pack: PackDef; credits: number; on
       </div>
       <button
         type="button"
-        className={`pack-buy-btn ${canAfford ? '' : 'pack-buy-disabled'}`}
-        onClick={() => canAfford && onBuy(pack)}
+        className={btnClass}
+        onClick={handleBuyClick}
         disabled={!canAfford}
       >
-        {canAfford ? 'Acheter' : 'Crédits insuffisants'}
+        {btnText}
       </button>
     </div>
   )
@@ -119,45 +144,69 @@ interface RevealCard { card: CardData; isNew: boolean; flipped: boolean }
 function CardReveal({ items, onClose }: { items: RevealCard[]; onClose: () => void }) {
   const [cards, setCards] = useState<RevealCard[]>(items)
   const [zoomed, setZoomed] = useState<RevealCard | null>(null)
+
   const allFlipped = cards.every(c => c.flipped)
-  const newCount = items.filter(c => c.isNew).length
+  const newCount   = items.filter(c => c.isNew).length
 
   function flip(i: number) {
-    setCards(prev => prev.map((c, idx) => idx === i ? { ...c, flipped: true } : c))
+    setCards(prev => prev.map((c, idx) => {
+      if (idx === i) return { ...c, flipped: true }
+      return c
+    }))
   }
 
-  function collectionSummary() {
+  function collectionSummary(): string {
     if (newCount === 0) return 'Ces cartes étaient déjà dans ta collection.'
     if (newCount === 1) return '1 nouvelle carte ajoutée à ta collection !'
     return `${newCount} nouvelles cartes ajoutées à ta collection !`
   }
 
+  let hintText = 'Clique sur les cartes pour les révéler'
+  if (allFlipped) hintText = collectionSummary()
+
   return (
     <div className="reveal-overlay">
       <div className="reveal-box">
         <h2 className="reveal-title">Booster ouvert !</h2>
-        <p className="reveal-hint">{allFlipped ? collectionSummary() : 'Clique sur les cartes pour les révéler'}</p>
+        <p className="reveal-hint">{hintText}</p>
 
         <div className="reveal-cards">
-          {cards.map((item, i) => (
-            <div
-              key={item.card.id + i}
-              className={`reveal-slot ${item.flipped ? `reveal-slot-open reveal-slot-${item.card.theme}${item.isNew ? ' reveal-slot-new' : ''}` : 'reveal-slot-back'}`}
-              onClick={() => item.flipped ? setZoomed(item) : flip(i)}
-            >
-              {item.flipped ? (
-                <div className="reveal-card-wrap">
-                  {item.isNew
-                    ? <span className="new-badge">NOUVEAU</span>
-                    : <span className="owned-badge">DÉJÀ POSSÉDÉE</span>
-                  }
-                  <CardSvg card={item.card} width={148} />
-                </div>
-              ) : (
-                <span className="card-back-q">?</span>
-              )}
-            </div>
-          ))}
+          {cards.map((item, i) => {
+            let slotClass = 'reveal-slot'
+            if (item.flipped) {
+              slotClass += ` reveal-slot-open reveal-slot-${item.card.theme}`
+              if (item.isNew) slotClass += ' reveal-slot-new'
+            } else {
+              slotClass += ' reveal-slot-back'
+            }
+
+            function handleSlotClick() {
+              if (item.flipped) {
+                setZoomed(item)
+              } else {
+                flip(i)
+              }
+            }
+
+            return (
+              <div
+                key={item.card.id + i}
+                className={slotClass}
+                onClick={handleSlotClick}
+              >
+                {item.flipped && (
+                  <div className="reveal-card-wrap">
+                    {item.isNew && <span className="new-badge">NOUVEAU</span>}
+                    {!item.isNew && <span className="owned-badge">DÉJÀ POSSÉDÉE</span>}
+                    <CardSvg card={item.card} width={148} />
+                  </div>
+                )}
+                {!item.flipped && (
+                  <span className="card-back-q">?</span>
+                )}
+              </div>
+            )
+          })}
         </div>
 
         {allFlipped && (
@@ -177,7 +226,6 @@ type Props = { onBack: () => void }
 export default function MarketplacePage({ onBack }: Props) {
   const { state, spendCredits, unlockCard } = usePlayerState()
   const [openedCards, setOpenedCards] = useState<RevealCard[] | null>(null)
-  const [lastPack, setLastPack] = useState<string | null>(null)
 
   function buyPack(pack: PackDef) {
     if (!spendCredits(pack.price)) return
@@ -188,7 +236,6 @@ export default function MarketplacePage({ onBack }: Props) {
       if (isNew) unlockCard(card.id)
       return { card, isNew, flipped: false }
     })
-    setLastPack(pack.name)
     setOpenedCards(items)
   }
 
@@ -232,11 +279,9 @@ export default function MarketplacePage({ onBack }: Props) {
       {openedCards && (
         <CardReveal
           items={openedCards}
-          onClose={() => { setOpenedCards(null); setLastPack(null) }}
+          onClose={() => setOpenedCards(null)}
         />
       )}
-
-      {lastPack && !openedCards && null}
     </div>
   )
 }

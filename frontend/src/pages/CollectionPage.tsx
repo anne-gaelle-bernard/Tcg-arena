@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import '../style/CollectionPage.css'
-import { ALL_CARDS, type CardData } from '../data/cards'
-import type { CardTheme } from '../data/cards'
+import { ALL_CARDS, type CardData, type CardTheme } from '../data/cards'
 import CardSvg from '../components/collection/CardSvg'
 import CardZoomModal from '../components/collection/CardZoomModal'
 import { usePlayerState } from '../store/playerState'
@@ -15,6 +14,12 @@ const FILTER_LABELS: { key: Filter; label: string }[] = [
   { key: 'legends',  label: 'Légendes' },
 ]
 
+function getRarityLabel(theme: CardTheme): string {
+  if (theme === 'legends') return 'LÉGENDE'
+  if (theme === 'specials') return 'SPÉCIALE'
+  return 'TALENT'
+}
+
 interface Props {
   onBack: () => void
 }
@@ -24,7 +29,13 @@ export default function CollectionPage({ onBack }: Props) {
   const [filter, setFilter] = useState<Filter>('all')
   const [zoomed, setZoomed] = useState<CardData | null>(null)
 
-  const displayed = filter === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.theme === filter)
+  let displayed: CardData[]
+  if (filter === 'all') {
+    displayed = ALL_CARDS
+  } else {
+    displayed = ALL_CARDS.filter(c => c.theme === filter)
+  }
+
   const owned = state.unlockedIds.length
 
   return (
@@ -36,32 +47,48 @@ export default function CollectionPage({ onBack }: Props) {
       </header>
 
       <nav className="col-filters">
-        {FILTER_LABELS.map(({ key, label }) => (
-          <button
-            key={key}
-            className={`col-filter-btn${filter === key ? ' col-filter-active' : ''}`}
-            onClick={() => setFilter(key)}
-          >
-            {label}
-          </button>
-        ))}
+        {FILTER_LABELS.map(({ key, label }) => {
+          let btnClass = 'col-filter-btn'
+          if (filter === key) btnClass += ' col-filter-active'
+
+          return (
+            <button
+              key={key}
+              className={btnClass}
+              onClick={() => setFilter(key)}
+            >
+              {label}
+            </button>
+          )
+        })}
       </nav>
 
       <div className="col-grid">
         {displayed.map(card => {
-          const owned = hasCard(card.id)
+          const isOwned = hasCard(card.id)
+
+          let wrapClass = 'col-card-wrap'
+          if (!isOwned) wrapClass += ' col-card-locked'
+
+          let wrapStyle: React.CSSProperties | undefined
+          if (isOwned) wrapStyle = { cursor: 'pointer' }
+
+          function handleClick() {
+            if (isOwned) setZoomed(card)
+          }
+
           return (
             <div
               key={card.id}
-              className={`col-card-wrap${owned ? '' : ' col-card-locked'}`}
-              onClick={() => owned && setZoomed(card)}
-              style={owned ? { cursor: 'pointer' } : undefined}
+              className={wrapClass}
+              onClick={handleClick}
+              style={wrapStyle}
             >
               <CardSvg card={card} width={190} />
-              {!owned && (
+              {!isOwned && (
                 <div className="col-lock-overlay">
                   <span className="col-lock-rarity">
-                    {card.theme === 'legends' ? 'LÉGENDE' : card.theme === 'specials' ? 'SPÉCIALE' : 'TALENT'}
+                    {getRarityLabel(card.theme)}
                   </span>
                 </div>
               )}

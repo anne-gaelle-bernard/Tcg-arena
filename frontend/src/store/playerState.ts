@@ -86,12 +86,13 @@ export function usePlayerState() {
     })
   }
 
-  function recordMatch(won: boolean): number {
+  function recordMatch(won: boolean, creditsOnWin: number = 0): number {
     let creditsAwarded = 0
 
     setState(prev => {
       if (won) {
-        const next = { ...prev, lossStreak: 0 }
+        creditsAwarded = creditsOnWin
+        const next = { ...prev, lossStreak: 0, credits: prev.credits + creditsOnWin }
         saveState(next)
         return next
       }
