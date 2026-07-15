@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 

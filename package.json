@@ -1,10 +1,13 @@
 {
+  "name": "tcg-arena",
   "scripts": {
     "dev": "vite",
     "dev:api": "tsx backend/server.ts",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start:api": "tsx backend/server.ts",
+    "test": "jest --runInBand",
+    "test:auth": "jest --runInBand backend/routes/auth.test.ts",
     "db:test": "tsx backend/test-db.ts",
     "db:init": "tsx backend/init-db.ts",
     "db:check-privileges": "tsx backend/check-db-privileges.ts"
@@ -31,9 +34,14 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.5.0",
     "@types/pg": "^8.20.0",
+    "@types/supertest": "^6.0.3",
     "@types/swagger-ui-express": "^4.1.8",
-    "prisma": "^7.6.0"
+    "jest": "^30.4.2",
+    "prisma": "^7.6.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11"
   }
 }

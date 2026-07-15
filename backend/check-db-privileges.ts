@@ -1,4 +1,4 @@
-const pool = require('./config/db');
+import pool from './config/db';
 
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
